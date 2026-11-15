@@ -12,7 +12,7 @@ import { CandidateLayout } from './components/layout/CandidateLayout';
 
 // Public pages
 import { Landing } from './pages/Landing';
-import { LandingPage } from './intern/pages/LandingPage';
+import UnifiedLandingPage from './pages/UnifiedLandingPage';
 import { Login } from './pages/Login';
 import { NotFound } from './pages/NotFound';
 
@@ -38,6 +38,7 @@ import { Settings } from './pages/Settings';
 import { ResumeScreenerPage } from './pages/ResumeScreenerPage';
 import { InternLogsPage } from './pages/InternLogsPage';
 import { CodingAssessmentsPage } from './pages/CodingAssessmentsPage';
+import JobPortalApp from './job-portal/JobPortalApp';
 
 // Candidate pages
 import { CandidateDashboard } from './pages/CandidateDashboard';
@@ -59,9 +60,10 @@ function App() {
             <Routes>
               
               {/* Primary Entry Point Route (Unified Platform Landing Page) */}
+              <Route path="/job-portal/*" element={<JobPortalApp />} />
               <Route
                 path="/"
-                element={<LandingPage />}
+                element={<UnifiedLandingPage />}
               />
               <Route path="/classic-landing" element={<LandingLayout><Landing /></LandingLayout>} />
               <Route path="/login" element={<Login />} />

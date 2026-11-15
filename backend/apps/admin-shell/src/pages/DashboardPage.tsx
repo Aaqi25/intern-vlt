@@ -5,6 +5,7 @@ import {
   Video, 
   FolderKanban, 
   Code, 
+  Briefcase,
   Users, 
   ShieldCheck, 
   Activity, 
@@ -55,6 +56,16 @@ export const DashboardPage: React.FC = () => {
       color: 'from-emerald-600 to-teal-600',
       description: 'Monaco IDE coding workspace, 12-language AST static analysis, question banks, candidate access codes.'
     },
+    {
+      title: 'THOZHIL Job Portal',
+      project: 'Project E',
+      path: '/job-portal',
+      port: 5050,
+      tech: 'React / FastAPI / SQLite',
+      icon: Briefcase,
+      color: 'from-amber-500 to-orange-500',
+      description: 'Employer vacancies, candidate profiles, private resumes, and application tracking.'
+    },
   ];
 
   return (
@@ -75,7 +86,7 @@ export const DashboardPage: React.FC = () => {
         </h1>
         
         <p className="text-sm text-slate-400 max-w-2xl leading-relaxed">
-          Welcome to the unified Thozhil Admin Shell. All four standalone applications remain 100% functionally intact and independently runnable. Select any module from the sidebar or grid below to mount its interface in the same browser tab.
+          Welcome to the unified Thozhil Admin Shell. Projects A–D remain independently runnable; Project E adds the separate Job Portal. Select a module from the sidebar or grid to open it.
         </p>
 
         <div className="mt-6 flex items-center gap-6 text-xs text-slate-400 border-t border-slate-800/80 pt-4 font-mono">
@@ -89,7 +100,7 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-cyan-400" />
-            <span>Applications Registered: <strong className="text-slate-200">4 Modules</strong></span>
+            <span>Applications Registered: <strong className="text-slate-200">5 Modules</strong></span>
           </div>
         </div>
       </div>

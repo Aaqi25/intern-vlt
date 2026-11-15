@@ -6,17 +6,59 @@
 
 @layer base {
   :root {
-    --color-primary: #1D4ED8;
-    --color-primary-hover: #1E40AF;
-    --color-primary-light: #EFF6FF;
-    --color-background: #F8FAFC;
-    --color-foreground: #0F172A;
-    --color-card: #FFFFFF;
-    --color-card-foreground: #0F172A;
+    --thozhil-brand: #00A0E9;
+    --thozhil-brand-hover: #0088C7;
+    --thozhil-brand-strong: #006E9F;
+    --thozhil-brand-soft: #EAF8FE;
+    --thozhil-ink: #0F172A;
+    --thozhil-text: #334155;
+    --thozhil-muted: #64748B;
+    --thozhil-background: #F7FAFC;
+    --thozhil-surface: #FFFFFF;
+    --thozhil-border: #DCE7ED;
+    --thozhil-border-subtle: #EDF3F6;
+    --thozhil-focus: rgb(0 160 233 / 24%);
+
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+
+    --radius-control: 0.625rem;
+    --radius-card: 0.875rem;
+    --radius-panel: 1.125rem;
+    --radius-pill: 9999px;
+    --shadow-card: 0 2px 8px rgb(15 23 42 / 5%);
+    --shadow-card-hover: 0 12px 28px rgb(15 23 42 / 9%);
+    --breakpoint-mobile: 640px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-desktop: 1024px;
+
+    --color-primary: var(--thozhil-brand);
+    --color-primary-hover: var(--thozhil-brand-hover);
+    --color-primary-light: var(--thozhil-brand-soft);
+    --color-background: var(--thozhil-background);
+    --color-foreground: var(--thozhil-ink);
+    --color-card: var(--thozhil-surface);
+    --color-card-foreground: var(--thozhil-ink);
     --color-muted: #F1F5F9;
-    --color-muted-foreground: #64748B;
-    --color-border: #E2E8F0;
-    --color-border-subtle: #F1F5F9;
+    --color-muted-foreground: var(--thozhil-muted);
+    --color-border: var(--thozhil-border);
+    --color-border-subtle: var(--thozhil-border-subtle);
     --color-success: #16A34A;
     --color-warning: #D97706;
     --color-danger: #DC2626;
@@ -27,85 +69,135 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    background-color: #F8FAFC;
-    color: #0F172A;
+    background-color: var(--thozhil-background);
+    color: var(--thozhil-ink);
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden m-0 p-0 text-sm leading-relaxed selection:bg-blue-600/15 selection:text-blue-900;
+    @apply font-sans antialiased overflow-x-hidden m-0 p-0 text-sm leading-relaxed;
+    background-color: var(--thozhil-background);
+    color: var(--thozhil-ink);
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply text-slate-900 font-bold tracking-tight;
+    @apply font-bold tracking-tight;
+    color: var(--thozhil-ink);
   }
 
-  /* Accessible Focus Outline */
   :focus-visible {
-    @apply outline-none ring-2 ring-blue-600 ring-offset-2 ring-offset-white;
+    outline: 2px solid var(--thozhil-brand);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--thozhil-brand-soft);
+    color: var(--thozhil-ink);
   }
 }
 
-/* Grounded Enterprise Surfaces */
 .surface-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 0.75rem;
+  background: var(--thozhil-surface);
+  border: 1px solid var(--thozhil-border);
+  border-radius: var(--radius-card);
 }
 
 .surface-subtle {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 0.75rem;
+  background: var(--thozhil-background);
+  border: 1px solid var(--thozhil-border);
+  border-radius: var(--radius-card);
 }
 
-/* Crisp Clean Enterprise Cards */
 .royal-glass-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  background: var(--thozhil-surface);
+  border: 1px solid var(--thozhil-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .royal-glass-card:hover {
-  border-color: #CBD5E1;
+  border-color: var(--thozhil-brand);
 }
 
-/* Clean Header Banner (Replacing noisy glowing hero banners) */
 .royal-banner {
-  background: #0F172A;
+  background: var(--thozhil-ink);
   border: 1px solid #1E293B;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-card);
 }
 
-/* Subtle, smooth transitions */
 .hover-lift {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .hover-lift:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  border-color: var(--thozhil-brand);
+  box-shadow: var(--shadow-card-hover);
 }
 
-/* Reticle tech corners completely disabled for clean look */
 .reticle-corner {
   display: none !important;
 }
 
-/* Ambient Dot Background */
 .bg-dot-pattern {
-  background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+  background-image: radial-gradient(var(--thozhil-border) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .bg-grid-pattern {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(226, 232, 240, 0.6) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+    linear-gradient(to right, rgb(220 231 237 / 60%) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(220 231 237 / 60%) 1px, transparent 1px);
 }
 
-/* Subtle Scrollbars */
+.thozhil-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.thozhil-brand-logo {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.thozhil-brand-caption {
+  color: var(--thozhil-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.thozhil-card {
+  background: var(--thozhil-surface);
+  border: 1px solid var(--thozhil-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.thozhil-control {
+  border: 1px solid var(--thozhil-border);
+  border-radius: var(--radius-control);
+  background: var(--thozhil-surface);
+  color: var(--thozhil-ink);
+}
+
+.thozhil-control:focus-visible {
+  border-color: var(--thozhil-brand);
+  box-shadow: 0 0 0 3px var(--thozhil-focus);
+}
+
+.thozhil-button-primary {
+  border-radius: var(--radius-control);
+  background: var(--thozhil-brand);
+  color: #fff;
+  font-weight: var(--font-weight-semibold);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.thozhil-button-primary:hover:not(:disabled) {
+  background: var(--thozhil-brand-hover);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -116,10 +208,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+  @apply rounded-full transition-colors;
+  background: #CBD5E1;
 }
 
-/* Accessible transitions under reduced motion */
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;

@@ -36,6 +36,8 @@ The Admin Shell is strictly scoped to the following 7 core responsibilities:
 
 The sidebar is fixed on the left and contains **exactly** the following 6 navigation items:
 
+The sidebar contains seven navigation items:
+
 | # | Sidebar Label | Route | Icon | Action / Mounted Target |
 |---|---|---|---|---|
 | 1 | **Dashboard** | `/dashboard` | `LayoutDashboard` | High-level system overview & module status |
@@ -43,7 +45,8 @@ The sidebar is fixed on the left and contains **exactly** the following 6 naviga
 | 3 | **AI Video Interviewer** | `/interview` | `Video` | Mounts Project A (`http://localhost:5011`) |
 | 4 | **AI Project Analyser** | `/project-analysis` | `FolderKanban` | Mounts Project C (`http://localhost:5032`) |
 | 5 | **AI Coding Interviewer** | `/coding` | `Code` | Mounts Project D (`http://localhost:5041`) |
-| 6 | **Intern Details** | `/interns` | `Users` | Candidate directory & cross-module evaluation cards |
+| 6 | **THOZHIL Job Portal** | `/job-portal` | `Briefcase` | Project E portal at `http://localhost:5173/job-portal` |
+| 7 | **Intern Details** | `/interns` | `Users` | Candidate directory & cross-module evaluation cards |
 
 ---
 
@@ -69,6 +72,7 @@ The Admin Shell implements the following clean route hierarchy:
 /interview                    -> InterviewModulePage (Mounts http://localhost:5011)
 /project-analysis             -> ProjectAnalysisModulePage (Mounts http://localhost:5032)
 /coding                       -> CodingModulePage (Mounts http://localhost:5041)
+/job-portal                   -> JobPortalModulePage (Mounts http://localhost:5173/job-portal)
 /interns                      -> InternsListPage (Candidate Directory)
 /interns/:id                  -> InternDetailPage (Detailed Candidate Profile)
 ```

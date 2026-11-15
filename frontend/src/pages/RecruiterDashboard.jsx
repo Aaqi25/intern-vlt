@@ -26,6 +26,39 @@ import { Avatar } from '../components/ui/Avatar';
 import { BrandLoader } from '../components/common/BrandLoader';
 import { EmptyState } from '../components/ui/EmptyState';
 
+const productModules = [
+  {
+    name: 'AI Project Analyser / LogLense',
+    description: 'Review project work and sprint progress in the LogLense workspace.',
+    icon: FileText,
+    destination: '/recruiter/intern-logs',
+  },
+  {
+    name: 'AI Video Interviewer',
+    description: 'Create interviews and review candidate assessment results.',
+    icon: Video,
+    destination: '/recruiter/interviews',
+  },
+  {
+    name: 'AI Resume Screener',
+    description: 'Review resumes against role requirements and organize candidates.',
+    icon: FileCheck2,
+    destination: '/recruiter/resume-screener',
+  },
+  {
+    name: 'AI Coding Interviewer',
+    description: 'Set coding assessments and review candidate submissions.',
+    icon: Code2,
+    destination: '/recruiter/coding-assessments',
+  },
+  {
+    name: 'Job Portal',
+    description: 'Publish vacancies and manage applications in the THOZHIL Job Portal.',
+    icon: Briefcase,
+    destination: '/job-portal',
+  },
+];
+
 export const RecruiterDashboard = () => {
   const { analytics, candidates, interviews, loading } = useApp();
   const navigate = useNavigate();
@@ -154,108 +187,47 @@ export const RecruiterDashboard = () => {
 
       {/* THOZHIL PRODUCT MODULES HUB */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-blue-600" />
+            <Sparkles className="h-4 w-4 text-thozhil" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
               Thozhil Product Modules
             </h2>
           </div>
-          <span className="text-xs text-slate-400 font-medium">4 Integrated Modules Available</span>
+          <span className="text-xs font-medium text-slate-500">5 platform modules</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Module 1 Card */}
-          <div
-            onClick={() => navigate('/recruiter/intern-logs')}
-            className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-xs">
-                <FileText className="w-5 h-5" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 font-mono">Module 1</span>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors mt-0.5">
-                LogLense Code Review
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                Automated code audit against sprint deliverables with line-level constructive reviews and TTS feedback.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-600 group-hover:text-blue-700">
-              <span>Open Module</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Module 2 Card */}
-          <div
-            onClick={() => navigate('/recruiter/interviews')}
-            className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-xs">
-                <Video className="w-5 h-5" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 font-mono">Module 2</span>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-indigo-600 transition-colors mt-0.5">
-                InterviewX AI Platform
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                Autonomous conversational voice & video interviews with real-time Sarvam AI audio and proctoring.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-indigo-600 group-hover:text-indigo-700">
-              <span>Open Module</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Module 3 Card */}
-          <div
-            onClick={() => navigate('/recruiter/resume-screener')}
-            className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-xs">
-                <FileCheck2 className="w-5 h-5" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 font-mono">Module 3</span>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-600 transition-colors mt-0.5">
-                AI Resume Screener
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                Multi-dimensional resume parsing, semantic qualification scoring, gap analysis, and ranked candidate tables.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-emerald-600 group-hover:text-emerald-700">
-              <span>Open Module</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Module 4 Card */}
-          <div
-            onClick={() => navigate('/recruiter/coding-assessments')}
-            className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-105 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-xs">
-                <Code2 className="w-5 h-5" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 font-mono">Module 4</span>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-amber-600 transition-colors mt-0.5">
-                AI Coding Assessments
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                Monaco code workspace with isolated Docker sandbox execution, automated test cases, and memory/time metrics.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-amber-600 group-hover:text-amber-700">
-              <span>Open Module</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {productModules.map((module) => {
+            const Icon = module.icon;
+            return (
+              <button
+                type="button"
+                key={module.name}
+                onClick={() => navigate(module.destination)}
+                className="group thozhil-card flex min-h-56 flex-col justify-between p-5 text-left transition hover:border-thozhil hover:shadow-md"
+              >
+                <span>
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-thozhil-soft text-thozhil transition-colors group-hover:bg-thozhil group-hover:text-white">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-thozhil">
+                    THOZHIL module
+                  </span>
+                  <span className="mt-1 block text-sm font-bold text-slate-900 group-hover:text-thozhil">
+                    {module.name}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-slate-600">
+                    {module.description}
+                  </span>
+                </span>
+                <span className="mt-4 flex items-center justify-between border-t border-thozhil-border pt-3 text-xs font-semibold text-thozhil">
+                  Open module
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

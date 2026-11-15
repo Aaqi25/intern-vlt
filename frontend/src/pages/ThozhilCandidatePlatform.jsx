@@ -5,6 +5,7 @@ import {
   Video,
   FileCheck2,
   Code2,
+  Briefcase,
   ArrowRight,
   ExternalLink,
   Sparkles,
@@ -66,6 +67,17 @@ export const ThozhilCandidatePlatform = () => {
       icon: Code2,
       themeColor: 'amber',
       features: ['Multi-language support (Python, JS, C++)', 'Hardened Docker container sandbox', 'Real-time test suite runner']
+    },
+    {
+      id: 'm5',
+      badge: 'PROJECT E • JOB PORTAL',
+      title: 'Browse and apply for jobs',
+      folder: 'apps/job-portal',
+      desc: 'Build your candidate profile, manage your resume, find published opportunities, and track application decisions.',
+      route: '/job-portal',
+      icon: Briefcase,
+      themeColor: 'blue',
+      features: ['Search by role, skills, and location', 'Manage your profile and resume', 'Track or withdraw applications']
     }
   ];
 

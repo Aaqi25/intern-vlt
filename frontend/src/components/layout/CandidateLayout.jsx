@@ -15,6 +15,7 @@ import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import { Modal } from '../ui/Modal';
+import BrandLogo from '../BrandLogo';
 
 export const CandidateLayout = ({ children }) => {
   const { toasts, dismissToast, showToast, candidates, interviews } = useApp();
@@ -70,8 +71,8 @@ export const CandidateLayout = ({ children }) => {
   }
 
   const candidateName = activeCandidate?.name || user?.name || 'Candidate';
-  const candidateEmail = activeCandidate?.email || user?.email || 'candidate@interviewx.local';
-  const candidateRole = activeCandidate?.role || 'Software Engineering Assessment';
+  const candidateEmail = activeCandidate?.email || user?.email || 'Account email unavailable';
+  const candidateRole = activeCandidate?.role || 'Candidate assessment';
 
   const candidateInitials = candidateName
     .split(' ')
@@ -98,7 +99,7 @@ export const CandidateLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased text-left selection:bg-blue-600/15 selection:text-blue-900">
+    <div className="min-h-screen bg-thozhil-background text-slate-900 flex flex-col font-sans antialiased text-left selection:bg-thozhil-soft selection:text-thozhil-ink">
       
       {/* Calm, Focused Candidate Top Bar */}
       <header className="h-14 bg-white border-b border-slate-200 shrink-0 sticky top-0 z-30 shadow-xs px-4 sm:px-8 flex items-center justify-between">
@@ -106,14 +107,7 @@ export const CandidateLayout = ({ children }) => {
         {/* Brand & Context */}
         <div className="flex items-center space-x-6">
           <Link to="/candidate" className="flex items-center space-x-2.5 group">
-            <div className="w-7 h-7 rounded-md bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-              IX
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="font-bold text-sm tracking-tight text-slate-900">InterviewX</span>
-              <span className="text-slate-300">/</span>
-              <span className="text-xs font-semibold text-slate-500">Candidate Hub</span>
-            </div>
+            <BrandLogo imageClassName="h-8 w-auto max-w-[170px]" caption="Candidate assessment" className="gap-3" />
           </Link>
 
           {/* Navigation Tabs */}

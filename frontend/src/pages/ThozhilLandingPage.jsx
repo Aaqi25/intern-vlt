@@ -48,6 +48,13 @@ export const ThozhilLandingPage = () => {
       desc: 'Monaco IDE code workspace with hardened Docker container execution and automated unit test verdicts.',
       icon: Code2,
       port: 'Docker Sandbox'
+    },
+    {
+      badge: 'Project E',
+      title: 'THOZHIL Job Portal',
+      desc: 'Publish vacancies, discover opportunities, manage candidate profiles, and track applications.',
+      icon: Briefcase,
+      port: 'API :5050'
     }
   ];
 
@@ -77,6 +84,14 @@ export const ThozhilLandingPage = () => {
           <Button
             variant="outline"
             size="sm"
+            onClick={() => navigate('/job-portal')}
+            className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+          >
+            Jobs & Careers
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => navigate('/login')}
             className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
           >
@@ -101,7 +116,7 @@ export const ThozhilLandingPage = () => {
         <div className="space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span>One Unified Platform • Four Integrated Modules</span>
+            <span>One Unified Platform • Five Integrated Modules</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
@@ -210,11 +225,11 @@ export const ThozhilLandingPage = () => {
               Integrated Product Ecosystem
             </span>
             <span className="text-xs font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded-full">
-              4 Microservices Connected
+              4 Assessment Modules + Job Portal
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-left">
             {modules.map((m, i) => {
               const Icon = m.icon;
               return (
@@ -239,7 +254,7 @@ export const ThozhilLandingPage = () => {
 
       {/* Footer */}
       <footer className="py-4 text-center text-xs text-slate-500 border-t border-slate-800/60 bg-[#070D18] relative z-10">
-        THOZHIL Enterprise Platform • One Login • Four Modules
+        THOZHIL Enterprise Platform • Five Connected Modules
       </footer>
     </div>
   );

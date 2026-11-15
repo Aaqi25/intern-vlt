@@ -7,6 +7,7 @@ import type { WorkLog, TeamMember } from '../context/InternContext';
 import { Card, Button, Input, Textarea } from '../components/PremiumComponents';
 import { AIReviewCard } from '../components/AIReviewCard';
 import { DashboardLayout } from '../components/DashboardLayout';
+import { useAuth } from '../../context/AuthContext';
 
 const TEMPLATES = [
   {
@@ -67,6 +68,7 @@ const getGanttTasks = (projectId: string): GanttTask[] => {
 };
 
 export const AuthorityDashboard: React.FC = () => {
+  const { user } = useAuth();
   const {
     projects,
     selectedProjectId,
@@ -286,7 +288,7 @@ export const AuthorityDashboard: React.FC = () => {
       name: newProjName.trim(),
       code: newProjCode.trim(),
       description: newProjDesc.trim(),
-      authorityName: newProjAuthority.trim() || 'Sarah Jenkins (VP of Product)',
+      authorityName: newProjAuthority.trim() || user?.name || 'Employer',
       members: uploadedMembers
     });
 
@@ -929,7 +931,7 @@ export const AuthorityDashboard: React.FC = () => {
                       type="text"
                       value={newMemberName}
                       onChange={(e) => setNewMemberName(e.target.value)}
-                      placeholder="e.g. Sanjay Kumar"
+                      placeholder="Team member name"
                       required
                     />
 
@@ -1075,7 +1077,7 @@ export const AuthorityDashboard: React.FC = () => {
                     label="Authority Manager Name"
                     value={newProjAuthority}
                     onChange={(e) => setNewProjAuthority(e.target.value)}
-                    placeholder="e.g. Sarah Jenkins"
+                    placeholder="Employer or project lead"
                   />
                 </div>
 
@@ -1135,7 +1137,7 @@ export const AuthorityDashboard: React.FC = () => {
                       <textarea
                         value={memberInputText}
                         onChange={(e) => setMemberInputText(e.target.value)}
-                        placeholder="e.g.&#10;Sanjay Kumar, Frontend Intern, sanjay@stripe.com&#10;Rohit Verma, Backend Intern, rohit@stripe.com"
+                        placeholder="name, role, email"
                         rows={2}
                         className="w-full text-xs p-2 rounded-xl border border-borderLight dark:border-borderDark/40 bg-white dark:bg-cardDark text-textPrimary-light dark:text-textPrimary-dark focus:outline-none focus:border-primary"
                       />

@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "job-portal-api",
+  "projectType": "application",
+  "sourceRoot": "apps/job-portal/api",
+  "tags": ["scope:job-portal", "type:api"],
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python -m uvicorn main:app --host 127.0.0.1 --port 5050 --reload",
+        "cwd": "apps/job-portal/api"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python -m pytest -q",
+        "cwd": "apps/job-portal/api"
+      }
+    }
+  }
+}

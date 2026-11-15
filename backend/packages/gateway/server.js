@@ -48,6 +48,7 @@ const PORT = process.env.PORT || 8080;
 const TARGETS = {
   UNIFIED_UI: process.env.UNIFIED_FRONTEND_URL || 'http://localhost:5173',
   BACKEND_CORE: process.env.BACKEND_CORE_URL || 'http://localhost:5000',
+  JOB_PORTAL_API: process.env.JOB_PORTAL_API_URL || 'http://localhost:5050',
   PROJECT_C_API: process.env.PROJECT_C_API_URL || 'http://localhost:5030',
   RESUME_SCREENER_API: process.env.RESUME_SCREENER_URL || 'http://localhost:8000',
 };
@@ -266,6 +267,7 @@ function getUpstreamTarget(reqUrl, req) {
   if (reqUrl.startsWith('/api/auth')) return 'AUTH_INTERNAL';
   if (reqUrl.startsWith('/api/interns')) return 'INTERNS_INTERNAL';
   if (reqUrl.startsWith('/api/coding')) return 'CODING_INTERNAL';
+  if (reqUrl.startsWith('/api/job-portal')) return TARGETS.JOB_PORTAL_API;
 
   // AI Resume Screener API (Port 8000)
   if (

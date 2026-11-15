@@ -5,26 +5,43 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1D4ED8',
-          hover: '#1E40AF',
-          light: '#EFF6FF',
-          dark: '#172554',
+          DEFAULT: 'var(--thozhil-brand)',
+          hover: 'var(--thozhil-brand-hover)',
+          light: 'var(--thozhil-brand-soft)',
+          dark: 'var(--thozhil-brand-strong)',
         },
         accent: {
-          DEFAULT: '#2563EB',
-          hover: '#1D4ED8',
-          light: '#EFF6FF',
+          DEFAULT: 'var(--thozhil-brand)',
+          hover: 'var(--thozhil-brand-hover)',
+          light: 'var(--thozhil-brand-soft)',
         },
-        brandBg: '#F8FAFC',
-        brandSurface: '#FFFFFF',
-        brandBorder: '#E2E8F0',
-        brandBorderSubtle: '#F1F5F9',
-        brandHeading: '#0F172A',
-        brandBody: '#475569',
-        brandMuted: '#64748B',
+        thozhil: {
+          DEFAULT: 'var(--thozhil-brand)',
+          hover: 'var(--thozhil-brand-hover)',
+          strong: 'var(--thozhil-brand-strong)',
+          soft: 'var(--thozhil-brand-soft)',
+          ink: 'var(--thozhil-ink)',
+          muted: 'var(--thozhil-muted)',
+          background: 'var(--thozhil-background)',
+          border: 'var(--thozhil-border)',
+        },
+        brandBg: 'var(--thozhil-background)',
+        brandSurface: 'var(--thozhil-surface)',
+        brandBorder: 'var(--thozhil-border)',
+        brandBorderSubtle: 'var(--thozhil-border-subtle)',
+        brandHeading: 'var(--thozhil-ink)',
+        brandBody: 'var(--thozhil-text)',
+        brandMuted: 'var(--thozhil-muted)',
         brandSuccess: '#16A34A',
         brandSuccessBg: '#F0FDF4',
         brandSuccessBorder: '#BBF7D0',
@@ -56,18 +73,22 @@ export default {
         sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       borderRadius: {
-        'xs': '0.25rem',   // 4px
-        'sm': '0.375rem',  // 6px
-        'md': '0.5rem',    // 8px
-        'lg': '0.625rem',  // 10px
-        'xl': '0.75rem',   // 12px
-        '2xl': '1rem',     // 16px
+        xs: '0.25rem',
+        sm: '0.375rem',
+        md: '0.5rem',
+        lg: '0.625rem',
+        xl: '0.75rem',
+        '2xl': '1rem',
+        control: 'var(--radius-control)',
+        card: 'var(--radius-card)',
+        panel: 'var(--radius-panel)',
+        pill: 'var(--radius-pill)',
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgb(0 0 0 / 0.04)',
         'sm': '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
-        'card': '0 1px 3px 0 rgb(15 23 42 / 0.05), 0 1px 2px -1px rgb(15 23 42 / 0.03)',
-        'card-hover': '0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 6px -2px rgb(15 23 42 / 0.04)',
+        'card': 'var(--shadow-card)',
+        'card-hover': 'var(--shadow-card-hover)',
         'dropdown': '0 8px 16px -4px rgb(15 23 42 / 0.08), 0 3px 6px -2px rgb(15 23 42 / 0.04)',
         'modal': '0 20px 25px -5px rgb(15 23 42 / 0.1), 0 8px 10px -6px rgb(15 23 42 / 0.05)',
       },

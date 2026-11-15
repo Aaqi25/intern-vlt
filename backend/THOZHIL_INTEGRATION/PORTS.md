@@ -21,6 +21,8 @@
 | **Project D Admin UI** | `5041` | Vue 3 / Vite | AI Coding Admin Dashboard | `npx nx run assessment-admin:dev` |
 | **Project D Candidate UI**| `5042` | Vue 3 / Vite | AI Coding Candidate Workspace | `npx nx run assessment-frontend:dev` |
 | **Project D NestJS Core**| `3001` | NestJS | Coding Core Enterprise API | `npm run start:dev` |
+| **Project E Job Portal API** | `5050` | Python FastAPI | Employer, vacancy, candidate, and application API | `cd apps/job-portal/api && python -m uvicorn main:app --host 127.0.0.1 --port 5050` |
+| **Unified React Frontend** | `5173` | React / Vite | Job Portal UI at `/job-portal` | `cd frontend && npm run dev -- --port 5173` |
 
 ---
 
@@ -35,3 +37,5 @@
 - `/api/interviews/*` $\rightarrow$ `http://localhost:5010`
 - `/api/logs/*` $\rightarrow$ `http://localhost:5030`
 - `/api/exams/*` $\rightarrow$ `http://localhost:5040`
+- `/api/job-portal/*` $\rightarrow$ `http://localhost:5050`
+- `/job-portal/*` $\rightarrow$ `http://localhost:5173` (unified React portal)

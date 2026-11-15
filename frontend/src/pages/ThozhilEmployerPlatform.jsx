@@ -84,6 +84,21 @@ export const ThozhilEmployerPlatform = () => {
       icon: Code2,
       themeColor: 'amber',
       features: ['Monaco IDE multi-language editor', 'Isolated Docker sandbox execution', 'Hidden & visible test suites']
+    },
+    {
+      id: 'm5',
+      badge: 'PROJECT E • JOB PORTAL',
+      title: 'THOZHIL Job Portal',
+      folder: 'apps/job-portal',
+      desc: 'Publish vacancies, manage applicants, review candidate profiles, and track recruitment decisions.',
+      route: '/job-portal',
+      standaloneUrl: 'http://localhost:5173/job-portal',
+      portLabel: 'API 5050 • React Portal',
+      status: 'Available',
+      statusColor: 'blue',
+      icon: Briefcase,
+      themeColor: 'blue',
+      features: ['Create and publish job vacancies', 'Review and shortlist applicants', 'Manage company profile']
     }
   ];
 
@@ -100,7 +115,7 @@ export const ThozhilEmployerPlatform = () => {
             Employer Command Center & Module Launcher
           </h1>
           <p className="text-xs md:text-sm text-slate-500 max-w-2xl leading-relaxed">
-            Welcome back, <strong className="text-slate-800">{user?.name || 'Administrator'}</strong>. Select any of the four production modules below to manage hiring pipelines, conduct evaluations, or screen candidates.
+            Welcome back, <strong className="text-slate-800">{user?.name || 'Administrator'}</strong>. Manage vacancies and candidates alongside the four assessment modules.
           </p>
         </div>
 
@@ -135,15 +150,15 @@ export const ThozhilEmployerPlatform = () => {
               Integrated Product Modules
             </h2>
             <p className="text-xs text-slate-500">
-              Four specialized engineering recruitment and assessment products running on unified authentication
+              Four assessment products and the separate Project E Job Portal
             </p>
           </div>
           <span className="text-xs font-mono font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
-            4 / 4 Online
+            5 Platform Modules
           </span>
         </div>
 
-        {/* 4-Module Interactive Grid */}
+        {/* Platform module launcher */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {modules.map((mod) => {
             const Icon = mod.icon;

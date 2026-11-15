@@ -1,39 +1,32 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Activity } from 'lucide-react';
 import { Button } from '../ui/Button';
+import BrandLogo from '../BrandLogo';
 
 export const LandingLayout = ({ children }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 selection:bg-blue-600/20 selection:text-blue-900">
+    <div className="min-h-screen bg-thozhil-background flex flex-col font-sans text-slate-900 selection:bg-thozhil-soft selection:text-thozhil-ink">
       
       {/* Top Navbar */}
-      <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 shadow-xs">
+      <header className="sticky top-0 z-50 flex min-h-16 flex-wrap items-center justify-between gap-3 border-b border-thozhil-border bg-white px-4 py-3 shadow-xs sm:px-6 md:px-12">
         <Link to="/" className="flex items-center space-x-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-            TZ
-          </div>
-          <div className="flex flex-col text-left">
-            <div className="flex items-center space-x-1.5">
-              <span className="font-extrabold text-slate-900 tracking-tight text-base group-hover:text-blue-600 transition-colors">
-                THOZHIL
-              </span>
-            </div>
-            <span className="text-[10px] text-slate-500 font-medium hidden sm:block">Unified Hiring & Assessment Platform</span>
-          </div>
+          <BrandLogo imageClassName="h-8 w-auto max-w-[190px]" caption="Unified platform" className="gap-3" />
         </Link>
 
         {/* Center menu navigation links */}
-        <nav className="hidden md:flex items-center space-x-8 text-xs font-semibold text-slate-600">
-          <Link to="/candidate" className="hover:text-blue-600 transition-colors">
+        <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-600">
+          <Link to="/job-portal" className="hover:text-thozhil transition-colors">
+            Jobs & internships
+          </Link>
+          <Link to="/candidate" className="hover:text-thozhil transition-colors">
             Candidate Assessment
           </Link>
-          <Link to="/recruiter" className="hover:text-blue-600 transition-colors">
+          <Link to="/recruiter" className="hover:text-thozhil transition-colors">
             Employer Workspace
           </Link>
-          <Link to="/recruiter/analytics" className="hover:text-blue-600 transition-colors">
+          <Link to="/recruiter/analytics" className="hover:text-thozhil transition-colors">
             Analytics
           </Link>
         </nav>
@@ -69,20 +62,18 @@ export const LandingLayout = ({ children }) => {
       </main>
 
       {/* Modern Clean Footer */}
-      <footer className="bg-white border-t border-slate-200 py-8 px-6 md:px-12 text-center text-xs text-slate-500 select-none">
+      <footer className="border-t border-thozhil-border bg-white px-6 py-8 text-center text-xs text-slate-500 select-none md:px-12">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-6 h-6 rounded bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-              IX
-            </div>
-            <span className="font-semibold text-slate-900 text-sm">InterviewX AI</span>
-            <span className="text-slate-400">| Standardized Technical Recruitment & Assessment</span>
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
+            <BrandLogo imageClassName="h-7 w-auto max-w-[160px]" caption="Jobs, recruitment & assessment" className="gap-3" />
+            <span className="hidden text-slate-400 sm:inline">|</span>
+            <span>One THOZHIL platform for opportunity and assessment</span>
           </div>
           <div className="flex space-x-6 text-xs font-medium">
-            <Link to="/candidate" className="text-slate-600 hover:text-blue-600 transition-colors">Candidate Hub</Link>
-            <Link to="/recruiter" className="text-slate-600 hover:text-blue-600 transition-colors">Employer Hub</Link>
-            <Link to="/login" className="text-slate-600 hover:text-blue-600 transition-colors">Sign in</Link>
-            <Link to="/recruiter/analytics" className="text-slate-600 hover:text-blue-600 transition-colors">Analytics</Link>
+            <Link to="/job-portal" className="text-slate-600 hover:text-thozhil transition-colors">Job Portal</Link>
+            <Link to="/candidate" className="text-slate-600 hover:text-thozhil transition-colors">Candidate Hub</Link>
+            <Link to="/recruiter" className="text-slate-600 hover:text-thozhil transition-colors">Employer Hub</Link>
+            <Link to="/login" className="text-slate-600 hover:text-thozhil transition-colors">Sign in</Link>
           </div>
         </div>
       </footer>

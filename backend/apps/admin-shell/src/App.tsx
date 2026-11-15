@@ -7,6 +7,7 @@ import { ResumeModulePage } from './pages/ResumeModulePage';
 import { InterviewModulePage } from './pages/InterviewModulePage';
 import { ProjectAnalysisModulePage } from './pages/ProjectAnalysisModulePage';
 import { CodingModulePage } from './pages/CodingModulePage';
+import { JobPortalModulePage } from './pages/JobPortalModulePage';
 import { InternsListPage } from './pages/InternsListPage';
 import { InternDetailPage } from './pages/InternDetailPage';
 
@@ -25,6 +26,8 @@ const LayoutContent: React.FC = () => {
         return 'AI Project Analyser (Project C)';
       case '/coding':
         return 'AI Coding Interviewer (Project D)';
+      case '/job-portal':
+        return 'THOZHIL Job Portal (Project E)';
       case '/interns':
         return 'Intern Directory';
       default:
@@ -50,6 +53,7 @@ const LayoutContent: React.FC = () => {
             <Route path="/interview" element={<InterviewModulePage />} />
             <Route path="/project-analysis" element={<ProjectAnalysisModulePage />} />
             <Route path="/coding" element={<CodingModulePage />} />
+            <Route path="/job-portal" element={<JobPortalModulePage />} />
             <Route path="/interns" element={<InternsListPage />} />
             <Route path="/interns/:id" element={<InternDetailPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

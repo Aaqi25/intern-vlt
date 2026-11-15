@@ -20,12 +20,14 @@ import {
   Briefcase,
   MoreVertical,
   User,
-  Settings
+  Settings,
+  Menu,
+  X
 } from 'lucide-react';
 import { useApp } from '../context/InternContext';
 import { useAuth } from '../../context/AuthContext';
 import { useThozhilAuth } from '../../context/ThozhilAuthContext';
-import logoImage from '../../assets/thozhill-removebg.webp';
+import BrandLogo from '../../components/BrandLogo';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -57,6 +59,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   // Active path
   const currentPath = location.pathname;
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Track expanded accordion state for product modules
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>(() => {
@@ -74,6 +77,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
   // Ensure active route's module is expanded when path changes
   useEffect(() => {
+    setIsMobileMenuOpen(false);
     if (currentPath.includes('resume')) {
       setExpandedModules(prev => ({ ...prev, resume: true }));
     } else if (currentPath.includes('coding')) {
@@ -206,25 +210,33 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
   const userInitials = authUser?.name
     ? authUser.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
-    : (role === 'authority' ? 'SJ' : 'SK');
+    : (role === 'authority' ? 'EM' : 'CA');
     
-  const userName = authUser?.name || (role === 'authority' ? 'Sarah Jenkins' : 'Sanjay Kumar');
+  const userName = authUser?.name || (role === 'authority' ? 'Employer workspace' : 'Candidate workspace');
   const roleName = role === 'authority' ? 'EMPLOYER / MANAGER' : 'CANDIDATE / INTERN';
 
   const isLogLenseActive = currentPath === '/authority' || currentPath === '/intern' || currentPath === '/history' || currentPath.startsWith('/interns') || currentPath === '/project-analysis';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-bgDark text-textPrimary-light dark:text-textPrimary-dark flex flex-col md:flex-row transition-colors duration-200 font-sans">
+    <div className="min-h-screen bg-thozhil-background dark:bg-bgDark text-textPrimary-light dark:text-textPrimary-dark flex flex-col md:flex-row transition-colors duration-200 font-sans">
 
-      {/* ── Authentic Thozhil Shared Sidebar ── */}
-      <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 dark:border-borderDark bg-white dark:bg-cardDark shrink-0 flex flex-col z-20 shadow-sm">
+      {isMobileMenuOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-20 bg-slate-950/30 md:hidden"
+        />
+      )}
+      <aside className={`fixed inset-y-0 left-0 z-30 flex w-72 shrink-0 flex-col overflow-y-auto border-r border-slate-200 bg-white shadow-sm transition-transform duration-200 dark:border-borderDark dark:bg-cardDark md:static md:z-20 md:w-64 md:translate-x-0 ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
 
-        {/* Brand Header with LogLense Portal Indicator */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-slate-100 dark:border-borderDark">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-slate-100 px-5 dark:border-borderDark">
           <Link to="/" className="flex items-center gap-2 group">
-            <img src={logoImage} alt="Thozhil Logo" className="h-8 w-auto object-contain" />
+            <BrandLogo imageClassName="h-8 w-auto max-w-[150px]" />
           </Link>
-          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-100 dark:border-blue-800">
+          <span className="rounded-full border border-thozhil-border bg-thozhil-soft px-2.5 py-0.5 text-[10px] font-bold text-thozhil-strong">
             LogLense Portal
           </span>
         </div>
@@ -252,18 +264,18 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                   className={`
                     w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-xl transition-all duration-150 cursor-pointer
                     ${isModuleActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 shadow-xs'
+                      ? 'bg-thozhil-soft text-thozhil-strong dark:bg-sky-900/30 dark:text-sky-200 shadow-xs'
                       : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                     }
                   `}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className={isModuleActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500'}>
+                    <span className={isModuleActive ? 'text-thozhil dark:text-sky-300' : 'text-slate-500'}>
                       {module.icon}
                     </span>
                     <span className="tracking-tight">{module.name}</span>
                     {module.badge && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-blue-100 dark:bg-blue-800/60 text-blue-600 dark:text-blue-300 rounded">
+                      <span className="rounded bg-thozhil-soft px-1.5 py-0.2 text-[9px] font-bold text-thozhil-strong dark:bg-sky-900/60 dark:text-sky-200">
                         {module.badge}
                       </span>
                     )}
@@ -275,7 +287,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
                 {/* Expandable Submenu Items */}
                 {isModuleOpen && (
-                  <div className="pl-6 pr-1 py-1 space-y-0.5 border-l-2 border-blue-100 dark:border-blue-900/50 ml-4 animate-in fade-in duration-200">
+                  <div className="ml-4 space-y-0.5 border-l-2 border-thozhil-border py-1 pl-6 pr-1 animate-in fade-in duration-200 dark:border-sky-900/50">
                     {module.subItems.map((sub) => {
                       const isSubActive = currentPath === sub.path || (sub.path === '/authority' && currentPath === '/project-analysis') || (sub.path === '/intern' && currentPath === '/project-analysis');
 
@@ -287,7 +299,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                           className={`
                             w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-lg transition-colors cursor-pointer text-left
                             ${isSubActive
-                              ? 'bg-blue-600 text-white font-semibold shadow-2xs'
+                              ? 'bg-thozhil text-white font-semibold shadow-2xs'
                               : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900'
                             }
                           `}
@@ -309,6 +321,21 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
               </div>
             );
           })}
+          <button
+            type="button"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              navigate('/job-portal');
+            }}
+            className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+              currentPath.startsWith('/job-portal')
+                ? 'bg-thozhil-soft text-thozhil-strong'
+                : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60'
+            }`}
+          >
+            <Briefcase size={16} className={currentPath.startsWith('/job-portal') ? 'text-thozhil' : 'text-slate-500'} />
+            <span>Job Portal</span>
+          </button>
         </nav>
 
         {/* Sidebar Footer */}
@@ -316,7 +343,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           {/* User card with 3-dot slidebar menu */}
           <div className="relative">
             <div className="px-3 py-2 flex items-center justify-between gap-2.5 rounded-xl bg-white dark:bg-bgDark border border-slate-200/80 dark:border-borderDark shadow-2xs">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-thozhil text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                 {userInitials}
               </div>
               <div className="truncate min-w-0 flex-1">
@@ -324,12 +351,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                   {userName}
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className={`text-[9px] font-bold font-mono px-1.5 py-0.2 rounded ${
-                    role === 'authority' ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'
-                  }`}>
+                  <span className="rounded bg-thozhil-soft px-1.5 py-0.2 font-mono text-[9px] font-bold text-thozhil-strong">
                     {roleName}
                   </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 </div>
               </div>
               {/* Three Dot Action Button */}
@@ -347,7 +371,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             {showUserMenu && (
               <div className="absolute bottom-full left-0 right-0 mb-2 p-1.5 bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-xl shadow-xl z-50 text-xs animate-in fade-in duration-150">
                 <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-borderDark text-[11px] text-slate-500 font-medium truncate">
-                  {authUser?.email || (role === 'authority' ? 'manager@thozhil.com' : 'intern@thozhil.com')}
+                  {authUser?.email || 'Account email unavailable'}
                 </div>
                 <button
                   type="button"
@@ -357,7 +381,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                   }}
                   className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors text-left cursor-pointer"
                 >
-                  <User size={13} className="text-blue-500" />
+                  <User size={13} className="text-thozhil" />
                   <span>View Profile & Directory</span>
                 </button>
                 <button
@@ -368,7 +392,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                   }}
                   className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors text-left cursor-pointer"
                 >
-                  <Briefcase size={13} className="text-indigo-500" />
+                  <Briefcase size={13} className="text-thozhil" />
                   <span>Switch to {role === 'authority' ? 'Candidate Space' : 'Authority Hub'}</span>
                 </button>
                 <div className="my-1 border-t border-slate-100 dark:border-borderDark" />
@@ -400,9 +424,18 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
         {/* Top Header */}
-        <header className="h-16 border-b border-slate-200/80 dark:border-borderDark bg-white dark:bg-cardDark sticky top-0 z-10 px-6 flex items-center justify-between shrink-0 shadow-xs">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white px-3 shadow-xs dark:border-borderDark dark:bg-cardDark sm:px-6">
           {/* Left: Project Selector (when on LogLense) or Module Breadcrumb */}
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-thozhil-border text-slate-700 md:hidden"
+            >
+              {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
             {isLogLenseActive ? (
               <>
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">
@@ -414,7 +447,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                     setSelectedProjectId(e.target.value);
                     navigate(role === 'authority' ? '/authority' : '/intern');
                   }}
-                  className="bg-slate-50 dark:bg-bgDark border border-slate-200 dark:border-borderDark rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-textPrimary-dark focus:outline-none transition-all cursor-pointer shadow-2xs"
+                  className="max-w-[150px] rounded-lg border border-thozhil-border bg-slate-50 px-2 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs transition-all focus:outline-none dark:border-borderDark dark:bg-bgDark dark:text-textPrimary-dark sm:max-w-[200px] sm:px-3"
                 >
                   {projects.map((proj) => (
                     <option key={proj.id} value={proj.id}>
@@ -424,10 +457,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 </select>
               </>
             ) : (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-400">LogLense Orchestrator</span>
-                <span className="text-slate-300">/</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-white capitalize">
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="hidden text-xs font-bold text-slate-400 sm:inline">LogLense Orchestrator</span>
+                <span className="hidden text-slate-300 sm:inline">/</span>
+                <span className="truncate text-xs font-bold capitalize text-slate-800 dark:text-white">
                   {currentPath.includes('resume') ? 'AI Resume Screener' : currentPath.includes('coding') ? 'AI Coding Interviewer' : 'AI Video Interviewer'}
                 </span>
               </div>
@@ -435,7 +468,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => {
@@ -443,11 +476,12 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 setRole(nextRole);
                 navigate(nextRole === 'authority' ? '/authority' : '/intern');
               }}
-              className="flex items-center gap-2 px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-full text-xs text-slate-700 dark:text-slate-300 font-medium border border-slate-200/60 transition-colors cursor-pointer"
+              className="flex items-center gap-2 rounded-full border border-slate-200/60 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 sm:px-3"
               title="Click to switch between Authority and Intern role"
             >
-              <UserCheck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Role: <strong className="capitalize text-slate-900 dark:text-white">{role}</strong> <span className="text-[10px] text-blue-500 font-normal ml-0.5">(Switch)</span></span>
+              <UserCheck className="w-3.5 h-3.5 text-thozhil" />
+              <span className="hidden sm:inline">Role: <strong className="capitalize text-slate-900 dark:text-white">{role}</strong> <span className="ml-0.5 text-[10px] font-normal text-thozhil">(Switch)</span></span>
+              <span className="capitalize sm:hidden">{role}</span>
             </button>
 
             <button
@@ -462,7 +496,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
         </header>
 
         {/* Page Content Viewport */}
-        <main className="p-6 md:p-8 flex-1 w-full mx-auto space-y-6">
+        <main className="w-full flex-1 space-y-6 p-4 md:p-8">
           {children}
         </main>
       </div>

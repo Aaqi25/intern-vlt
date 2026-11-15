@@ -84,6 +84,12 @@ export const LandingPage: React.FC = () => {
             >
               Home
             </button>
+            <button
+              onClick={() => navigate('/job-portal')}
+              className="hover:text-[#1D78F8] transition-colors cursor-pointer"
+            >
+              Job Portal
+            </button>
 
             {/* Products Dropdown (AI Video Interviewer, AI Resume Screener, AI Coding Interviewer) */}
             <div 

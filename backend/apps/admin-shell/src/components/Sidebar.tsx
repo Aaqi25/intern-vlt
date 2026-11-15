@@ -5,6 +5,7 @@ import {
   FileText, 
   Video, 
   Code, 
+  Briefcase,
   FolderKanban, 
   Users, 
   ShieldCheck,
@@ -18,6 +19,7 @@ export const Sidebar: React.FC = () => {
     { label: 'AI Video Interviewer', path: '/interview', icon: Video },
     { label: 'AI Project Analyser', path: '/project-analysis', icon: FolderKanban },
     { label: 'AI Coding Interviewer', path: '/coding', icon: Code },
+    { label: 'THOZHIL Job Portal', path: '/job-portal', icon: Briefcase },
     { label: 'Intern Details', path: '/interns', icon: Users },
   ];
 

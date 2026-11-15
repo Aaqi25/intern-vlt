@@ -27,6 +27,7 @@ import type { WorkLog } from '../context/InternContext';
 import { Card, Button, Textarea } from '../components/PremiumComponents';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { AIReportModal } from '../components/AIReportModal';
+import { useAuth } from '../../context/AuthContext';
 
 const TIPS = [
   '💡 The AI reviews your actual uploaded code files against the task requirements — be sure to upload them.',
@@ -57,6 +58,7 @@ const getFileIcon = (filename: string) => {
 };
 
 export const InternDashboard: React.FC = () => {
+  const { user } = useAuth();
   const {
     projects,
     selectedProjectId,
@@ -68,6 +70,7 @@ export const InternDashboard: React.FC = () => {
   } = useApp();
 
   const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
+  const candidateName = user?.name || 'Candidate';
 
   const [logContent, setLogContent] = useState('');
   const [activeTipIdx, setActiveTipIdx] = useState(0);
@@ -230,14 +233,14 @@ export const InternDashboard: React.FC = () => {
           onClose={() => setIsReportOpen(false)}
           submittedAt={submittedLog.uploadedAt}
           projectName={activeProject?.name}
-          internName="Sanjay Kumar"
+          internName={candidateName}
         />
       )}
 
       {/* ── Greeting ── */}
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight text-textPrimary-light dark:text-textPrimary-dark">
-          Welcome Back, Sanjay
+          Welcome back, {candidateName}
         </h1>
         <p className="text-sm text-textSecondary-light dark:text-textSecondary-dark mt-1">
           Submitting code for{' '}
