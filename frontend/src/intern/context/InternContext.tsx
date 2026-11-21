@@ -182,7 +182,7 @@ const INITIAL_DESCRIPTIONS: WorkDescription[] = [
     projectId: 'proj-linear',
     authorityId: 'auth-rivers',
     assigneeId: 'intern-aditi',
-    description: '### Sync Architecture Objective\nImplement conflict resolution handlers on the WebSocket channel.\n\n### Core Tasks\n- Hook up a last-write-wins CRDT strategy for updating card states.\n- Create a mock latency network testing suite inside `/test/network.ts`.\n- Write proper logs showing concurrent resolution outputs.\n\n### Requirements\nLogs should explicitly show how conflicts are resolved when two users drag cards simultaneously.',
+    description: '### Sync Architecture Objective\nImplement conflict resolution handlers on the WebSocket channel.\n\n### Core Tasks\n- Hook up a last-write-wins CRDT strategy for updating card states.\n- Create a simulated latency network testing suite inside `/test/network.ts`.\n- Write proper logs showing concurrent resolution outputs.\n\n### Requirements\nLogs should explicitly show how conflicts are resolved when two users drag cards simultaneously.',
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
   }
 ];
@@ -220,7 +220,7 @@ const INITIAL_LOGS: WorkLog[] = [
       score: 42,
       feedback: 'The log is extremely short and does not address core requirements. Missing the concurrent resolution details, test suites, and latency resolution outputs requested by the architect.',
       strengths: ['Initiated websocket script configurations.'],
-      weaknesses: ['Very brief summary with minimal details (under 15 words).', 'Completely skipped the CRDT synchronization mechanics.', 'No mock network test runs or resolution logs provided.'],
+      weaknesses: ['Very brief summary with minimal details (under 15 words).', 'Completely skipped the CRDT synchronization mechanics.', 'No simulated network test runs or resolution logs provided.'],
       suggestions: ['Expand log files to include file modifications, terminal logs, and resolved issues.', 'Review the sprint requirements and document testing workflows explicitly.'],
       confidence: 0.95,
       createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()

@@ -279,7 +279,7 @@ export class LRUCache {
     ],
     hints: [
       'Level 1: To achieve O(1) removals and insertions at any point, combine a Hash Map with a Doubly Linked List.',
-      'Level 2: Use dummy head and tail nodes to avoid null-pointer checks during edge insertions and deletions.',
+      'Level 2: Use sentinel head and tail nodes to avoid null-pointer checks during edge insertions and deletions.',
       'Level 3: On every get(key), don’t forget to move that node to the most recent position.'
     ]
   },

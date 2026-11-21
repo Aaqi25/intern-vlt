@@ -26,7 +26,7 @@ export const ThozhilCandidatePlatform = () => {
   const candidateModules = [
     {
       id: 'm1',
-      badge: 'MODULE 1 • LOGLENSE',
+      badge: 'MODULE 1 • AI PROJECT ANALYSER',
       title: 'Submit Daily Work Log & Code Audit',
       folder: 'main/intern',
       desc: 'Submit your internship task deliverables and program files. Receive automated line-level code feedback, quality scores, and TTS speech synthesis summaries.',
@@ -37,7 +37,7 @@ export const ThozhilCandidatePlatform = () => {
     },
     {
       id: 'm2',
-      badge: 'MODULE 2 • INTERVIEWX AI',
+      badge: 'MODULE 2 • AI VIDEO INTERVIEWER',
       title: 'AI Conversational Video & Voice Interview',
       folder: 'project-a',
       desc: 'Enter your proctored interview room with live conversational Sarvam AI speech loop, camera diagnostics, and proctoring event monitoring.',

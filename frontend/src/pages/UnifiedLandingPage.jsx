@@ -1,400 +1,665 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  ArrowRight,
-  BriefcaseBusiness,
-  Building2,
-  ChevronDown,
-  Code2,
-  FileCheck2,
-  FileText,
-  GraduationCap,
-  Menu,
-  X,
-  Video,
+import { useNavigate, Link } from 'react-router-dom';
+import { 
+  Search, 
+  MapPin, 
+  Briefcase, 
+  Building2, 
+  ArrowRight, 
+  GraduationCap, 
+  CheckCircle2, 
+  ShieldCheck, 
+  ChevronRight,
+  TrendingUp
 } from 'lucide-react';
-import BrandLogo from '../components/BrandLogo';
+import { VltNavbar, VltFooter } from '../components/vlt';
+import {
+  Reveal,
+  SplitText,
+  Parallax,
+  HorizontalModuleTrack,
+  VelocitySkew,
+  ReactiveMarquee,
+  ScrollProgressBar,
+  StatCounter,
+  CustomCursor,
+} from '../components/motion';
 
-const modules = [
-  {
-    name: 'AI Project Analyser / LogLense',
-    description: 'Review project work, track sprint progress, and give candidates useful feedback.',
-    icon: FileText,
-    destination: '/authority',
-    role: 'admin',
-  },
-  {
-    name: 'AI Video Interviewer',
-    description: 'Run structured video interviews and review candidate responses.',
-    icon: Video,
-    destination: '/recruiter/interviews',
-    role: 'admin',
-  },
-  {
-    name: 'AI Resume Screener',
-    description: 'Compare resumes with role requirements and organize your candidate pipeline.',
-    icon: FileCheck2,
-    destination: '/recruiter/resume-screener',
-    role: 'admin',
-  },
-  {
-    name: 'AI Coding Interviewer',
-    description: 'Set coding assessments and evaluate submissions in the coding workspace.',
-    icon: Code2,
-    destination: '/recruiter/coding-assessments',
-    role: 'admin',
-  },
-  {
-    name: 'Job Portal',
-    description: 'Find jobs and internships, publish vacancies, and track applications.',
-    icon: BriefcaseBusiness,
-    destination: '/job-portal',
-  },
+const MARQUEE_TECH = [
+  'DOCKER SANDBOX ISOLATION',
+  'SARVAM AI MULTILINGUAL SPEECH',
+  'TF-IDF & GEMINI MULTI-FACTOR RESUME NLP',
+  'PYTHON 3.12 / GCC 13 / TEMURIN 17',
+  'AIR-GAPPED NETWORK EXECUTION',
+  'REAL-TIME WEBSOCKET PROCTORING',
+  'SOVEREIGN DELIBERATION LEDGER',
+  'ZERO-TRUST MONACO IDE',
+  'AST STATIC CODE AUDITING',
 ];
 
-const audiences = [
+// Featured verified corporate opportunities (Naukri orchestrator + authentic tech roles)
+const FEATURED_JOBS = [
   {
-    title: 'Job seekers, students & freshers',
-    description: 'Explore job and internship opportunities, apply, and keep your applications together.',
-    icon: GraduationCap,
-    action: 'Explore opportunities',
-    destination: '/job-portal',
+    id: 'zoho-fs-01',
+    company: 'Zoho Corporation',
+    role: 'Senior Full Stack Engineer',
+    location: 'Chennai, India',
+    type: 'Full-Time',
+    experience: '3 - 6 Years',
+    salary: '₹18 - 28 LPA',
+    department: 'Core SaaS Products',
+    tags: ['React', 'Node.js', 'PostgreSQL', 'System Design'],
+    evaluationModel: 'Code Sandbox + Technical Interview'
   },
   {
-    title: 'Employers & recruiters',
-    description: 'Publish roles, review applications, and use assessment tools throughout hiring.',
-    icon: Building2,
-    action: 'Post a vacancy',
-    destination: '/job-portal',
+    id: 'freshworks-ai-02',
+    company: 'Freshworks',
+    role: 'AI / ML Platform Engineer',
+    location: 'Chennai / Bengaluru (Hybrid)',
+    type: 'Full-Time',
+    experience: '2 - 5 Years',
+    salary: '₹22 - 35 LPA',
+    department: 'Freddy AI Intelligence',
+    tags: ['Python', 'PyTorch', 'Gemini APIs', 'FastAPI'],
+    evaluationModel: 'Resume NLP Match + Voice Interview'
   },
   {
-    title: 'Assessment teams',
-    description: 'Open the platform workspaces for interviews, resumes, coding, and project analysis.',
-    icon: FileCheck2,
-    action: 'Open assessment workspace',
-    destination: '/login',
-    role: 'admin',
-    from: '/recruiter',
+    id: 'juspay-sys-03',
+    company: 'Juspay',
+    role: 'High-Throughput Systems Architect',
+    location: 'Bengaluru, India',
+    type: 'Full-Time',
+    experience: '4 - 8 Years',
+    salary: '₹28 - 45 LPA',
+    department: 'Payment Gateway Infrastructure',
+    tags: ['Rust', 'Go', 'Distributed Systems', 'Linux'],
+    evaluationModel: 'Hardened Docker Sandbox (C++ / Go)'
   },
+  {
+    id: 'swiggy-fe-04',
+    company: 'Swiggy',
+    role: 'Frontend Infrastructure Specialist',
+    location: 'Bengaluru / Remote',
+    type: 'Full-Time',
+    experience: '3 - 6 Years',
+    salary: '₹20 - 32 LPA',
+    department: 'Consumer Apps Platform',
+    tags: ['Next.js', 'TypeScript', 'Performance', 'WebGL'],
+    evaluationModel: 'Practical Code Review Challenge'
+  },
+  {
+    id: 'razorpay-sec-05',
+    company: 'Razorpay',
+    role: 'Cloud Security & Sandbox Engineer',
+    location: 'Bengaluru, India',
+    type: 'Full-Time',
+    experience: '3 - 7 Years',
+    salary: '₹25 - 38 LPA',
+    department: 'Infrastructure Security',
+    tags: ['Docker', 'Kubernetes', 'SIGKILL Quotas', 'AWS'],
+    evaluationModel: 'Automated Container Security Audit'
+  },
+  {
+    id: 'cred-data-06',
+    company: 'Cred',
+    role: 'Data Platform & Streaming Engineer',
+    location: 'Bengaluru, India',
+    type: 'Full-Time',
+    experience: '2 - 5 Years',
+    salary: '₹24 - 36 LPA',
+    department: 'Financial Intelligence Services',
+    tags: ['Kafka', 'Spark', 'PostgreSQL', 'Airflow'],
+    evaluationModel: 'Sprint Log Review & Deliberation'
+  }
 ];
-
-function loginState(destination, role) {
-  return { from: { pathname: destination }, defaultTab: role };
-}
 
 export default function UnifiedLandingPage() {
   const navigate = useNavigate();
-  const [productsOpen, setProductsOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedExperience, setSelectedExperience] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
-  const openWorkspace = (destination, role = 'admin') => {
-    setProductsOpen(false);
-    setMobileMenuOpen(false);
-    navigate('/login', { state: loginState(destination, role) });
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchQuery) params.append('q', searchQuery);
+    if (selectedLocation) params.append('location', selectedLocation);
+    if (selectedExperience) params.append('experience', selectedExperience);
+    navigate(`/job-portal?${params.toString()}`);
   };
 
-  const openJobs = () => {
-    setProductsOpen(false);
-    setMobileMenuOpen(false);
-    navigate('/job-portal');
-  };
-
-  const renderModuleLink = (module, compact = false) => {
-    const Icon = module.icon;
-    const open = module.destination === '/job-portal'
-      ? openJobs
-      : () => openWorkspace(module.destination, module.role);
-
-    return (
-      <button
-        key={module.name}
-        type="button"
-        onClick={open}
-        className={`group flex w-full items-start gap-3 rounded-xl text-left transition-colors hover:bg-[var(--thozhil-brand-soft)] ${
-          compact ? 'p-3' : 'p-5'
-        }`}
-      >
-        <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--thozhil-brand-soft)] text-thozhil">
-          <Icon className="h-5 w-5" aria-hidden="true" />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block font-semibold text-slate-900 group-hover:text-thozhil">
-            {module.name}
-          </span>
-          <span className="mt-1 block text-sm leading-6 text-slate-600">
-            {module.description}
-          </span>
-          {!compact && (
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-thozhil">
-              Explore module <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </span>
-          )}
-        </span>
-      </button>
-    );
+  const handleQuickTagClick = (tag) => {
+    navigate(`/job-portal?q=${encodeURIComponent(tag)}`);
   };
 
   return (
-    <div className="min-h-screen bg-thozhil-background text-slate-900">
-      <header className="sticky top-0 z-30 border-b border-thozhil-border bg-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <Link to="/" aria-label="THOZHIL home" className="shrink-0">
-            <BrandLogo
-              imageClassName="h-9 w-auto max-w-[190px]"
-              caption="Unified platform"
-              className="gap-3"
-            />
-          </Link>
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-clip">
+      {/* Skip to main content accessibility link */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:text-sm focus:font-bold focus:uppercase focus:tracking-wider focus:rounded"
+      >
+        Skip to content
+      </a>
 
-          <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">
-            <a href="#platform" className="text-sm font-medium text-slate-600 hover:text-thozhil">
-              Platform
-            </a>
-            <a href="#modules" className="text-sm font-medium text-slate-600 hover:text-thozhil">
-              Modules
-            </a>
-            <Link to="/job-portal" className="text-sm font-medium text-slate-600 hover:text-thozhil">
-              Jobs & internships
-            </Link>
-            <div
-              className="relative"
-              onBlur={(event) => {
-                if (!event.currentTarget.contains(event.relatedTarget)) setProductsOpen(false);
-              }}
-            >
-              <button
-                type="button"
-                aria-expanded={productsOpen}
-                aria-haspopup="true"
-                onClick={() => setProductsOpen((open) => !open)}
-                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-thozhil"
-              >
-                Products <ChevronDown className="h-4 w-4" aria-hidden="true" />
-              </button>
-              {productsOpen && (
-                <div className="absolute right-0 top-full mt-3 w-[min(90vw,28rem)] rounded-2xl border border-thozhil-border bg-white p-2 shadow-xl">
-                  {modules.map((module) => renderModuleLink(module, true))}
-                </div>
-              )}
+      {/* Scroll Progress Bar at Viewport Top */}
+      <ScrollProgressBar />
+
+      {/* Desktop Magnetic Custom Cursor */}
+      <CustomCursor />
+
+      {/* Dynamic Auto-Hiding Navbar */}
+      <VltNavbar isDark={false} />
+
+      <main id="main" tabIndex="-1" className="outline-none">
+        
+        {/* ========================================================
+            HERO SECTION: Naukri Career Orchestrator + Hyring Presentation
+            ======================================================== */}
+        <section className="relative min-h-[92svh] flex flex-col justify-between pt-[calc(var(--nav-h,88px)+clamp(1.5rem,3.5vh,3rem))] pb-14 px-6 md:px-12 max-w-[1600px] mx-auto">
+          
+          {/* Top Platform Identification Badge */}
+          <Reveal delay={0.05} className="w-full flex items-center justify-between pb-4 border-b border-slate-200 text-xs font-mono uppercase tracking-wider text-slate-500">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <span className="font-semibold text-slate-700">THOZHIL HIRING ECOSYSTEM</span>
+              <span className="hidden sm:inline text-slate-400">·</span>
+              <span className="hidden sm:inline">AUTONOMOUS EVALUATION & DIRECT TALENT MATCHING</span>
             </div>
-          </nav>
+            <div className="hidden md:flex items-center gap-4 text-slate-400">
+              <span>CHENNAI · BENGALURU · HYDERABAD</span>
+            </div>
+          </Reveal>
 
-          <div className="hidden items-center gap-2 md:flex">
-            <button
-              type="button"
-              onClick={() => openWorkspace('/intern', 'candidate')}
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-            >
-              Candidate sign in
-            </button>
-            <Link
-              to="/job-portal?mode=register"
-              className="thozhil-button-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm"
-            >
-              Create an account <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-thozhil-border text-slate-700 md:hidden"
-          >
-            {mobileMenuOpen
-              ? <X className="h-5 w-5" aria-hidden="true" />
-              : <Menu className="h-5 w-5" aria-hidden="true" />}
-          </button>
-
-          {mobileMenuOpen && (
-            <nav aria-label="Mobile navigation" className="flex w-full flex-col gap-1 border-t border-thozhil-border py-3 md:hidden">
-              <a href="#platform" onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                Platform
-              </a>
-              <a href="#modules" onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                Modules
-              </a>
-              <Link to="/job-portal" onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                Jobs & internships
-              </Link>
-              {modules.map((module) => renderModuleLink(module, true))}
-              <button
-                type="button"
-                onClick={() => openWorkspace('/intern', 'candidate')}
-                className="rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-thozhil hover:bg-[var(--thozhil-brand-soft)]"
-              >
-                Candidate sign in
-              </button>
-              <Link to="/job-portal?mode=register" onClick={() => setMobileMenuOpen(false)} className="thozhil-button-primary mt-2 inline-flex justify-center px-4 py-2.5 text-sm">
-                Create an account
-              </Link>
-            </nav>
-          )}
-        </div>
-      </header>
-
-      <main>
-        <section id="platform" className="border-b border-thozhil-border bg-white">
-          <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
-            <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-thozhil-border bg-thozhil-background px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
-                <span className="h-2 w-2 rounded-full bg-thozhil" aria-hidden="true" />
-                THOZHIL careers & hiring
-              </p>
-              <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
-                One platform for{' '}
-                <span className="text-thozhil">jobs, internships, and smarter hiring.</span>
-              </h1>
-              <p className="mt-5 max-w-xl text-base leading-7 text-slate-600">
-                Find opportunities, build your skills, and connect with employers. Hiring teams can discover talent and assess candidates in the same THOZHIL ecosystem.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={openJobs}
-                  className="thozhil-button-primary inline-flex min-h-12 items-center justify-center gap-2 px-5 text-sm"
-                >
-                  Find jobs & internships <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => openWorkspace('/recruiter', 'admin')}
-                  className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-control)] border border-thozhil-border bg-white px-5 text-sm font-semibold text-slate-800 hover:border-thozhil hover:text-thozhil"
-                >
-                  Employer & recruiter sign in
-                </button>
-              </div>
-              <p className="mt-4 text-sm text-slate-500">
-                New to THOZHIL?{' '}
-                <Link to="/job-portal?mode=register" className="font-semibold text-thozhil underline-offset-4 hover:underline">
-                  Create a job seeker or employer account
-                </Link>
-              </p>
+          {/* Central Headline with VLT Parallax Drift */}
+          <div className="my-auto py-8 lg:py-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold tracking-wide mb-6">
+              <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+              <span>Verified Enterprise Career Platform</span>
             </div>
 
-            <div className="rounded-[var(--radius-panel)] border border-thozhil-border bg-thozhil-background p-4 sm:p-6">
-              <div className="flex items-start justify-between gap-4 rounded-[var(--radius-card)] border border-thozhil-border bg-white p-5 sm:p-6">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-thozhil">THOZHIL platform</p>
-                  <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-900">
-                    Career opportunities and hiring tools, together.
-                  </h2>
-                  <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">
-                    Choose the workspace for your next step.
-                  </p>
-                </div>
-                <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-thozhil-soft text-thozhil sm:flex">
-                  <BriefcaseBusiness className="h-6 w-6" aria-hidden="true" />
+            <Parallax speed={1.08}>
+              <h1 className="text-[clamp(2.5rem,6.2vw,5.75rem)] font-extrabold tracking-[-0.035em] leading-[1.05] text-slate-900 max-w-5xl">
+                Find Careers That Value Your Actual Skills.
+                <span className="block text-blue-600 font-normal italic font-serif tracking-tight mt-1">
+                  Evaluated Honestly. Hired Directly.
                 </span>
-              </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-thozhil-border bg-white p-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-thozhil-soft text-thozhil">
-                    <GraduationCap className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">Jobs & internships</span>
-                    <span className="mt-0.5 block text-xs text-slate-500">Explore opportunities</span>
-                  </span>
+              </h1>
+            </Parallax>
+
+            <p className="mt-6 text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl leading-relaxed">
+              India's premier AI-native recruitment ecosystem connecting ambitious job seekers with verified enterprise opportunities through air-gapped technical evaluations and conversational interview intelligence.
+            </p>
+
+            {/* ========================================================
+                NAUKRI-STYLE UNIVERSAL JOB SEARCH BAR
+                ======================================================== */}
+            <div className="mt-8 max-w-4xl bg-white border-2 border-blue-600/20 hover:border-blue-600 rounded-2xl shadow-xl shadow-blue-900/5 p-3 sm:p-4 transition-all duration-300">
+              <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                
+                {/* Search Keywords */}
+                <div className="md:col-span-5 relative flex items-center">
+                  <Search className="w-5 h-5 text-blue-600 absolute left-3.5" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Skills, Designations, Companies..."
+                    className="w-full pl-11 pr-3 py-3 text-sm font-sans bg-slate-50 md:bg-transparent rounded-lg border border-slate-200 md:border-0 focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 placeholder:text-slate-400"
+                  />
                 </div>
-                <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-thozhil-border bg-white p-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-thozhil-soft text-thozhil">
-                    <FileCheck2 className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">AI candidate assessment</span>
-                    <span className="mt-0.5 block text-xs text-slate-500">Review skills and experience</span>
-                  </span>
+
+                {/* Experience Dropdown */}
+                <div className="md:col-span-3 border-t md:border-t-0 md:border-l border-slate-200 pl-0 md:pl-3 relative flex items-center">
+                  <Briefcase className="w-4 h-4 text-slate-400 absolute left-3 md:left-5 pointer-events-none" />
+                  <select
+                    value={selectedExperience}
+                    onChange={(e) => setSelectedExperience(e.target.value)}
+                    className="w-full pl-9 pr-4 py-3 text-sm font-sans bg-slate-50 md:bg-transparent rounded-lg border border-slate-200 md:border-0 focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 cursor-pointer"
+                  >
+                    <option value="">Experience (All)</option>
+                    <option value="fresher">Fresher / Graduate</option>
+                    <option value="1-3">1 - 3 Years</option>
+                    <option value="3-5">3 - 5 Years</option>
+                    <option value="5+">5+ Years</option>
+                  </select>
                 </div>
-                <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-thozhil-border bg-white p-4 sm:col-span-2">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-thozhil-soft text-thozhil">
-                    <Video className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">Recruitment workspaces</span>
-                    <span className="mt-0.5 block text-xs text-slate-500">Manage roles, applications, and assessments</span>
-                  </span>
+
+                {/* Location Input */}
+                <div className="md:col-span-2 border-t md:border-t-0 md:border-l border-slate-200 pl-0 md:pl-3 relative flex items-center">
+                  <MapPin className="w-4 h-4 text-slate-400 absolute left-3 md:left-5 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={selectedLocation}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    placeholder="Location"
+                    className="w-full pl-9 pr-3 py-3 text-sm font-sans bg-slate-50 md:bg-transparent rounded-lg border border-slate-200 md:border-0 focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 placeholder:text-slate-400"
+                  />
                 </div>
+
+                {/* Search Button */}
+                <div className="md:col-span-2">
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-md shadow-blue-600/20 transition-all hover:shadow-lg hover:shadow-blue-600/30 active:scale-[0.99]"
+                  >
+                    <span>Search</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </form>
+
+              {/* Popular Trend Filters */}
+              <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-slate-500 font-medium flex items-center gap-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+                  Trending:
+                </span>
+                {['Remote Roles', 'Full Stack Developer', 'Python / AI', 'DevOps & Cloud', 'SDE-2', 'Fresher Opportunities'].map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => handleQuickTagClick(tag)}
+                    className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 rounded-md text-slate-600 transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
               </div>
             </div>
+
           </div>
+
+          {/* Bottom Trust Row */}
+          <div className="pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-slate-500 font-medium">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>5,000+ Verified Openings</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>350+ Enterprise Employers</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Zero Resume Spammers</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Direct Fast-Track Hiring</span>
+            </div>
+          </div>
+
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-thozhil">Built for every side of the journey</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              Opportunities for people. Practical tools for hiring teams.
-            </h2>
-          </div>
-          <div className="mt-7 grid gap-4 md:grid-cols-3">
-            {audiences.map((audience) => {
-              const Icon = audience.icon;
-              const onClick = audience.destination === '/job-portal'
-                ? openJobs
-                : () => openWorkspace(audience.from, audience.role);
-              return (
-                <article key={audience.title} className="thozhil-card flex flex-col p-5 sm:p-6">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--thozhil-brand-soft)] text-thozhil">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-4 text-lg font-bold text-slate-900">{audience.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{audience.description}</p>
-                  <button
-                    type="button"
-                    onClick={onClick}
-                    className="mt-5 inline-flex items-center gap-2 self-start text-sm font-semibold text-thozhil hover:text-thozhil-strong"
-                  >
-                    {audience.action} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section id="modules" className="border-y border-thozhil-border bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-sm font-semibold uppercase tracking-wide text-thozhil">Connected THOZHIL modules</p>
-                <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                  From opportunity discovery to candidate assessment
+        {/* ========================================================
+            FEATURED CORPORATE OPENINGS (Requirement 4)
+            ======================================================== */}
+        <section className="py-20 px-6 md:px-12 bg-slate-50/70 border-t border-b border-slate-200">
+          <div className="max-w-[1600px] mx-auto">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div>
+                <span className="text-xs uppercase tracking-wider font-mono text-blue-700 font-bold block mb-2">
+                  DIRECT RECRUITMENT PIPELINE
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+                  Featured High-Impact Opportunities
                 </h2>
               </div>
-              <Link to="/job-portal" className="inline-flex items-center gap-2 text-sm font-semibold text-thozhil hover:text-thozhil-strong">
-                Browse opportunities <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <Link 
+                to="/job-portal"
+                className="inline-flex items-center gap-2 text-sm font-bold text-blue-700 hover:text-blue-800 transition-colors"
+              >
+                <span>Browse All 500+ Open Positions</span>
+                <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {modules.map((module) => (
-                <article key={module.name} className="thozhil-card">
-                  {renderModuleLink(module)}
-                </article>
+
+            {/* 6 Corporate Job Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {FEATURED_JOBS.map((job) => (
+                <div 
+                  key={job.id}
+                  className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between hover:border-blue-600 hover:shadow-lg hover:shadow-blue-900/5 transition-all duration-300 group"
+                >
+                  <div>
+                    {/* Top Row: Company & Type */}
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center font-bold text-blue-700 text-sm">
+                          {job.company.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900">{job.company}</h4>
+                          <span className="text-xs text-slate-500">{job.department}</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {job.type}
+                      </span>
+                    </div>
+
+                    {/* Job Title */}
+                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-700 transition-colors mb-3">
+                      {job.role}
+                    </h3>
+
+                    {/* Metadata: Location, Exp, CTC */}
+                    <div className="space-y-1.5 text-xs text-slate-600 mb-5">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{job.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{job.experience} · <strong>{job.salary}</strong></span>
+                      </div>
+                    </div>
+
+                    {/* Skill Tags */}
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {job.tags.map((tag) => (
+                        <span key={tag} className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-medium">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Card Bottom: Evaluation Model & Apply CTA */}
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                    <span className="text-[11px] font-mono text-slate-500 truncate" title={job.evaluationModel}>
+                      ⚡ {job.evaluationModel}
+                    </span>
+                    <Link
+                      to={`/job-portal?role=${encodeURIComponent(job.role)}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white text-xs font-bold transition-all shrink-0"
+                    >
+                      <span>Apply</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+
+                </div>
               ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* ========================================================
+            HYRING-STYLE ARCHITECTURE: The 5 Modules Behind Every Job
+            ======================================================== */}
+        <section className="py-24 px-6 md:px-12 max-w-[1600px] mx-auto">
+          <div className="max-w-4xl mb-16">
+            <span className="text-xs uppercase tracking-wider font-mono text-blue-700 font-bold block mb-3">
+              THE TALENT OPERATING SYSTEM
+            </span>
+            <SplitText
+              as="h2"
+              lines={[
+                "Traditional hiring black holes are broken.",
+                "THOZHIL powers verified applications through air-gapped Docker coding and conversational AI interviews.",
+                "From discovery to offer deliberation — transparent, objective, and verified."
+              ]}
+              className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-tight text-slate-900"
+            />
+          </div>
+
+          {/* 3 Pillar Cards: Candidate Experience vs Recruiter Control */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 border border-slate-200 rounded-xl bg-white hover:border-blue-600 hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold mb-6">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">For Job Seekers & Graduates</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                  One unified verified profile. Complete technical assessments once in an air-gapped IDE and interview directly with AI voice rooms without waiting weeks for initial recruiter responses.
+                </p>
+              </div>
+              <Link 
+                to="/job-portal"
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 hover:text-blue-900"
+              >
+                <span>Explore Opportunities</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="p-8 border border-slate-200 rounded-xl bg-white hover:border-blue-600 hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold mb-6">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">For Recruiters & Talent Teams</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                  Zero resume spam. Our NLP screener extracts skills and runs structured technical evaluations automatically, presenting ranked candidate scorecards with transparent proctoring logs.
+                </p>
+              </div>
+              <Link 
+                to="/login"
+                state={{ defaultTab: 'admin' }}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 hover:text-blue-900"
+              >
+                <span>Open Recruiter Portal</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="p-8 border border-slate-200 rounded-xl bg-white hover:border-blue-600 hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold mb-6">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">For Engineering Leads & Authorities</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                  Review real sprint code submissions through the AI Project Analyser, inspect multi-model AI critiques, and record irrevocable hiring decisions on a sovereign, auditable candidate ledger.
+                </p>
+              </div>
+              <Link 
+                to="/login"
+                state={{ defaultTab: 'admin' }}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 hover:text-blue-900"
+              >
+                <span>Access Authority Room</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+        </section>
+
+        {/* ========================================================
+            HORIZONTAL MODULE TRACK (Pinned Section)
+            ======================================================== */}
+        <HorizontalModuleTrack />
+
+        {/* ========================================================
+            HARDENED DOCKER SANDBOX (Deep Midnight Navy Showcase)
+            ======================================================== */}
+        <section id="sandbox" className="theme-dark bg-[#071324] text-white py-24 px-6 md:px-12 border-b border-slate-800">
+          <div className="max-w-[1600px] mx-auto">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-slate-800">
+              <div>
+                <span className="text-xs uppercase tracking-[0.18em] font-mono text-blue-400 block mb-2">
+                  AIR-GAPPED EXECUTION
+                </span>
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+                  Multi-Language Docker Sandbox.
+                </h2>
+              </div>
+              <p className="text-slate-300 max-w-md text-sm leading-relaxed">
+                Zero network access, root privilege dropping, hard 256MB memory ceilings, and strict CPU quotas ensure candidate code runs in an isolated, tamper-proof environment.
+              </p>
+            </div>
+
+            {/* 4 Runtimes Matrix */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  lang: 'Python 3.12',
+                  tag: 'python:3.12-slim',
+                  compile: 'Direct execution',
+                  exec: 'python3 solution.py',
+                  color: 'text-amber-400',
+                },
+                {
+                  lang: 'Node.js 20',
+                  tag: 'node:20-slim',
+                  compile: 'V8 JIT compilation',
+                  exec: 'node solution.js',
+                  color: 'text-emerald-400',
+                },
+                {
+                  lang: 'C++ 17',
+                  tag: 'gcc:13',
+                  compile: 'g++ -O2 -std=c++17 -o solution',
+                  exec: './solution',
+                  color: 'text-sky-400',
+                },
+                {
+                  lang: 'Java 17',
+                  tag: 'eclipse-temurin:17-jdk-alpine',
+                  compile: 'javac Solution.java',
+                  exec: 'java Solution',
+                  color: 'text-purple-400',
+                },
+              ].map((r, i) => (
+                <div key={i} className="p-6 bg-[#0b1c3d] border border-slate-800 rounded-lg flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">
+                        RUNTIME 0{i + 1}
+                      </span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    </div>
+                    <h3 className={`text-xl font-bold font-sans tracking-tight mb-2 ${r.color}`}>
+                      {r.lang}
+                    </h3>
+                    <code className="text-xs font-mono text-slate-400 block mb-6 pb-4 border-b border-slate-800">
+                      {r.tag}
+                    </code>
+                    <div className="space-y-3 text-xs font-mono text-slate-400">
+                      <div>
+                        <span className="text-slate-500 block">COMPILE:</span>
+                        <span className="text-slate-300">{r.compile}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">EXECUTE:</span>
+                        <span className="text-slate-300">{r.exec}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-4 border-t border-slate-800 text-[11px] font-mono text-slate-400">
+                    network_mode: "none"
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Security Table Bar */}
+            <div className="mt-8 p-6 bg-[#0b1c3d] border border-slate-800 rounded-lg grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+              <div>
+                <span className="text-slate-400 block">MEMORY LIMIT</span>
+                <span className="text-white font-bold">256 MB Hard Cap</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">CPU QUOTA</span>
+                <span className="text-white font-bold">1.0 vCPU Cores</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">EXECUTION TIMEOUT</span>
+                <span className="text-white font-bold">10s (SIGKILL)</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">CAPABILITIES</span>
+                <span className="text-white font-bold">cap_drop=["ALL"]</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ========================================================
+            STATS & METRICS COUNTERS
+            ======================================================== */}
+        <section className="py-20 px-6 md:px-12 bg-white border-b border-slate-200">
+          <div className="max-w-[1600px] mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+              <StatCounter
+                value="5"
+                suffix=""
+                label="Integrated Assessment Modules"
+              />
+              <StatCounter
+                value="4"
+                suffix=" Runtimes"
+                label="Air-Gapped Docker Execution"
+              />
+              <StatCounter
+                value="6"
+                suffix=" Stages"
+                label="Structured Recruitment Machine"
+              />
+              <StatCounter
+                value="100"
+                suffix="%"
+                label="Zero Host Network Leakage"
+              />
             </div>
           </div>
         </section>
+
+        {/* ========================================================
+            VELOCITY-REACTIVE INFINITE MARQUEE
+            ======================================================== */}
+        <VelocitySkew>
+          <section className="theme-dark bg-[#071324] text-white border-b border-slate-800 py-3">
+            <ReactiveMarquee items={MARQUEE_TECH} baseSpeed={28} />
+          </section>
+        </VelocitySkew>
+
+        {/* ========================================================
+            FINAL CALL TO ACTION
+            ======================================================== */}
+        <section className="py-24 px-6 md:px-12 max-w-[1600px] mx-auto">
+          <div className="p-10 md:p-16 bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 rounded-2xl text-white text-center flex flex-col items-center justify-center relative overflow-hidden shadow-xl">
+            <span className="text-xs uppercase tracking-widest font-mono text-blue-200 mb-3 block">
+              ENTERPRISE RECRUITMENT READY
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight max-w-2xl mb-4 text-white">
+              Transform Your Recruitment Pipeline Today.
+            </h2>
+            <p className="text-blue-100 text-sm sm:text-base max-w-lg mb-8 leading-relaxed">
+              Explore opportunities across top technology leaders, or launch automated evaluation suites for your hiring pipeline.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                to="/job-portal"
+                className="px-6 py-3.5 bg-white text-blue-900 hover:bg-blue-50 font-bold text-sm rounded-lg shadow-sm transition-all"
+              >
+                Browse Active Opportunities
+              </Link>
+              <Link
+                to="/login"
+                state={{ defaultTab: 'admin' }}
+                className="px-6 py-3.5 bg-blue-700/60 hover:bg-blue-700 text-white border border-blue-400/40 font-bold text-sm rounded-lg transition-all"
+              >
+                Employer Portal Sign In
+              </Link>
+            </div>
+          </div>
+        </section>
+
       </main>
 
-      <footer className="bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-7 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <div>
-            <BrandLogo imageClassName="h-7 w-auto max-w-[160px]" caption="Jobs, internships & hiring" className="gap-3" />
-            <p className="mt-2 text-xs text-slate-500">One THOZHIL platform for opportunity and assessment.</p>
-          </div>
-          <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
-            <Link to="/job-portal" className="hover:text-thozhil">Jobs & internships</Link>
-            <button type="button" onClick={() => openWorkspace('/intern', 'candidate')} className="text-left hover:text-thozhil">
-              Candidate assessment
-            </button>
-            <button type="button" onClick={() => openWorkspace('/recruiter', 'admin')} className="text-left hover:text-thozhil">
-              Employer workspace
-            </button>
-          </nav>
-        </div>
-      </footer>
+      {/* Full-Width Monolithic Wordmark Footer */}
+      <VltFooter />
     </div>
   );
 }

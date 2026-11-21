@@ -188,7 +188,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
             <span><strong className="text-slate-600">↵</strong> Select</span>
             <span><strong className="text-slate-600">ESC</strong> Close</span>
           </div>
-          <span className="font-medium text-slate-500">InterviewX AI Command</span>
+          <span className="font-medium text-slate-500">Thozhil AI Command</span>
         </div>
       </div>
     </div>

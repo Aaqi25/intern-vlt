@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+/* Fonts are loaded via <link> in index.html with font-display=swap */
 
 @tailwind base;
 @tailwind components;
@@ -6,18 +6,89 @@
 
 @layer base {
   :root {
-    --thozhil-brand: #00A0E9;
-    --thozhil-brand-hover: #0088C7;
-    --thozhil-brand-strong: #006E9F;
-    --thozhil-brand-soft: #EAF8FE;
-    --thozhil-ink: #0F172A;
-    --thozhil-text: #334155;
-    --thozhil-muted: #64748B;
-    --thozhil-background: #F7FAFC;
-    --thozhil-surface: #FFFFFF;
-    --thozhil-border: #DCE7ED;
-    --thozhil-border-subtle: #EDF3F6;
-    --thozhil-focus: rgb(0 160 233 / 24%);
+    /* Thozhil Blue & White Core Brand Palette (ref: thozhil.in) */
+    --thozhil-brand: #0052cc;        /* Royal Sapphire Blue */
+    --thozhil-brand-hover: #0747a6;  /* Deep Ocean Blue */
+    --thozhil-brand-strong: #0a192f; /* Deep Midnight Navy */
+    --thozhil-brand-soft: #f0f5ff;   /* Soft Ice Blue Surface */
+    --thozhil-blue-accent: #2563eb;  /* Electric Blue */
+    --thozhil-blue-light: #e0edff;   /* Subtle Blue Border / Accent */
+    
+    --thozhil-ink: #0f172a;          /* Slate 900 for high-contrast typography */
+    --thozhil-text: #334155;         /* Slate 700 for body reading */
+    --thozhil-muted: #64748b;        /* Slate 500 for captions & metadata */
+    --thozhil-background: #ffffff;   /* Pure White Canvas */
+    --thozhil-surface: #ffffff;      /* White Surface */
+    --thozhil-surface-subtle: #f8fafd; /* Clean Cool Off-White */
+    --thozhil-border: #e2e8f0;       /* Hairline Border */
+    --thozhil-border-subtle: #f1f5f9;/* Soft Divider */
+    --thozhil-focus: rgba(0, 82, 204, 0.25);
+
+    /* VLT Monochrome/Navy Accents */
+    --black: #0a192f;
+    --white: #ffffff;
+    --n-950: #071324;
+    --n-900: #0b1c3d;
+    --n-850: #102a54;
+    --n-800: #1a3a6e;
+    --n-600: #475569;
+    --n-500: #64748b;
+    --n-400: #94a3b8;
+    --n-300: #cbd5e1;
+    --n-200: #e2e8f0;
+    --n-100: #f8fafd;
+
+    /* Theme Context Tokens */
+    --fg: var(--thozhil-ink);
+    --bg: var(--thozhil-background);
+    --muted: var(--thozhil-muted);
+    --line: rgba(0, 82, 204, 0.08); /* Subtle blue-tint hairline divider */
+    --card-bg: var(--white);
+    --card-border: #e2e8f0;
+
+    /* Typography & Hierarchy */
+    --font: 'Manrope', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+    --font-mono: 'JetBrains Mono', Menlo, Consolas, monospace;
+
+    --fs-mega: clamp(4.5rem, 11.5vw, 12rem);
+    --fs-hero: clamp(2.75rem, 8.5vw, 8.5rem);
+    --fs-h1: clamp(2.4rem, 6.5vw, 6.5rem);
+    --fs-h2: clamp(2rem, 5vw, 4.5rem);
+    --fs-h3: clamp(1.5rem, 3vw, 2.5rem);
+    --fs-h4: clamp(1.15rem, 1.8vw, 1.6rem);
+    --fs-lead: clamp(1.15rem, 1.6vw, 1.5rem);
+    --fs-body: clamp(0.95rem, 1.05vw, 1.125rem);
+    --fs-small: 0.875rem;
+    --fs-label: 0.75rem;
+
+    /* Spacing Scale */
+    --gutter: clamp(20px, 4vw, 72px);
+    --max: 1600px;
+    --section: clamp(4.5rem, 7vw, 7.5rem);
+    --section-sm: clamp(2.5rem, 4.5vw, 4rem);
+    --nav-h: 88px;
+
+    /* Motion & Transitions */
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --ease-in-out: cubic-bezier(.76, 0, .24, 1);
+    --t-fast: .25s;
+    --t: .32s;
+    --t-slow: .9s;
+
+    /* Backward Compatible Platform Tokens */
+    --thozhil-brand: #000000;
+    --thozhil-brand-hover: #1f1f1f;
+    --thozhil-brand-strong: #0a0a0a;
+    --thozhil-brand-soft: #f5f5f5;
+    --thozhil-ink: #000000;
+    --thozhil-text: #333333;
+    --thozhil-muted: #666666;
+    --thozhil-background: #ffffff;
+    --thozhil-surface: #ffffff;
+    --thozhil-border: #eaeaea;
+    --thozhil-border-subtle: #f5f5f5;
+    --thozhil-focus: rgba(0, 0, 0, 0.25);
 
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
@@ -65,10 +136,11 @@
   }
 
   html {
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    /* Manrope is the canonical sans-serif — set in tailwind.config.js too */
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth is intentionally OMITTED — Lenis owns smoothing */
     background-color: var(--thozhil-background);
     color: var(--thozhil-ink);
   }
@@ -93,6 +165,39 @@
     background: var(--thozhil-brand-soft);
     color: var(--thozhil-ink);
   }
+}
+
+/* ─── Lenis Smooth Scroll CSS ────────────────────────────────────────────────
+   These rules are required by Lenis and must NOT use scroll-behavior:smooth
+   on <html>. Lenis takes full control of scroll physics.
+   See: https://lenis.darkroom.engineering
+──────────────────────────────────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important; /* override any user-agent smooth behaviour */
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Ensure inner scrollable panels (modals, tables, sidebars) keep native scroll */
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Page-transition loading animation */
+@keyframes loading {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }
 
 .surface-card {
@@ -198,9 +303,289 @@
   background: var(--thozhil-brand-hover);
 }
 
+/* ========================================================
+   VLT Theme Contexts
+   ======================================================== */
+.theme-light {
+  --fg: var(--thozhil-ink);
+  --bg: #ffffff;
+  --muted: var(--thozhil-muted);
+  --line: rgba(0, 82, 204, 0.08);
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+.theme-dark {
+  --fg: #ffffff;
+  --bg: #071324; /* Deep midnight navy */
+  --muted: #94a3b8;
+  --line: rgba(255, 255, 255, 0.1);
+  --card-bg: #0b1c3d;
+  --card-border: #162f5a;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+.theme-dark ::selection {
+  background: var(--thozhil-blue-accent);
+  color: #ffffff;
+}
+
+.theme-grey {
+  --fg: var(--thozhil-ink);
+  --bg: #f8fafd;
+  --muted: var(--thozhil-muted);
+  --line: rgba(0, 82, 204, 0.08);
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+/* Hairline Rule */
+.rule {
+  height: 1px;
+  background-color: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ========================================================
+   Architectural Background Guide Columns
+   ======================================================== */
+.architectural-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.architectural-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  padding-inline: var(--gutter);
+  background-clip: content-box;
+  background-image: 
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: calc((100% - 2 * var(--gutter)) / 6) 100%, 1px 100%;
+  background-repeat: repeat-x, no-repeat;
+  background-position: var(--gutter) 0, calc(100% - var(--gutter) + 1px) 0;
+}
+
+.theme-dark .architectural-grid::before {
+  background-image: 
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(270deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+@media (max-width: 768px) {
+  .architectural-grid::before {
+    background-size: calc((100% - 2 * var(--gutter)) / 2) 100%, 1px 100%;
+  }
+}
+
+/* ========================================================
+   VLT Signature Button with Curtain Fill Hover Effect
+   ======================================================== */
+.vlt-btn {
+  --btn-fg: var(--thozhil-brand);
+  --btn-bg: transparent;
+  --btn-border: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 50px;
+  padding: 0 1.5rem;
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--btn-fg);
+  background-color: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  white-space: nowrap;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+  cursor: pointer;
+}
+
+.vlt-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--thozhil-brand-soft);
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--t) var(--ease);
+}
+
+.vlt-btn:hover::before,
+.vlt-btn:focus-visible::before {
+  transform: scaleY(1);
+  transform-origin: top;
+}
+
+.vlt-btn:hover,
+.vlt-btn:focus-visible {
+  color: var(--thozhil-brand-hover);
+  border-color: var(--thozhil-brand);
+}
+
+.vlt-btn--solid {
+  --btn-fg: #ffffff;
+  --btn-bg: var(--thozhil-brand);
+  --btn-border: var(--thozhil-brand);
+  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.25);
+}
+
+.vlt-btn--solid::before {
+  background-color: var(--thozhil-brand-hover);
+}
+
+.vlt-btn--solid:hover,
+.vlt-btn--solid:focus-visible {
+  color: #ffffff;
+  border-color: var(--thozhil-brand-hover);
+  box-shadow: 0 4px 16px rgba(0, 82, 204, 0.35);
+}
+
+.vlt-btn--text {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.vlt-btn--text::before {
+  display: none;
+}
+
+.vlt-btn--text:hover,
+.vlt-btn--text:focus-visible {
+  color: var(--fg);
+}
+
+.vlt-btn--text .vlt-btn__label {
+  padding-bottom: 3px;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  transition: background-size var(--t) var(--ease);
+}
+
+.vlt-btn--text:hover .vlt-btn__label {
+  background-position: 100% 100%;
+  background-size: 0% 1px;
+}
+
+.vlt-btn--sm {
+  min-height: 40px;
+  padding: 0 1.15rem;
+  font-size: 0.75rem;
+}
+
+.vlt-btn--lg {
+  min-height: 62px;
+  padding: 0 2rem;
+  font-size: 0.875rem;
+}
+
+/* ========================================================
+   Text Reveal Mask & Animation
+   ======================================================== */
+.text-reveal__mask {
+  display: block;
+  overflow: hidden;
+  margin-block: -0.06em -0.1em;
+  padding-block: 0.06em 0.1em;
+}
+
+.text-reveal__line {
+  display: block;
+  will-change: transform;
+}
+
+/* ========================================================
+   Feature & Module Cards (.pcard)
+   ======================================================== */
+.vlt-card {
+  position: relative;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: border-color var(--t) var(--ease);
+}
+
+.vlt-card:hover {
+  border-color: var(--fg);
+}
+
+.vlt-card__media {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--n-900);
+}
+
+.vlt-card__hover {
+  position: absolute;
+  inset: 0;
+  transition: transform var(--t-slow) var(--ease);
+}
+
+.vlt-card:hover .vlt-card__hover {
+  transform: scale(1.025);
+}
+
+.vlt-card__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
+  opacity: 0.4;
+  transition: opacity var(--t) var(--ease);
+}
+
+.vlt-card:hover .vlt-card__shade {
+  opacity: 0.8;
+}
+
+.vlt-card__pill {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease);
+}
+
+.vlt-card:hover .vlt-card__pill {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.vlt-card__title {
+  transition: transform var(--t) var(--ease);
+}
+
+.vlt-card:hover .vlt-card__title {
+  transform: translateX(6px);
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -208,12 +593,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply rounded-full transition-colors;
-  background: #CBD5E1;
+  background: var(--n-300);
+  border-radius: 9999px;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: var(--n-800);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: var(--n-500);
 }
 
 @media (prefers-reduced-motion: reduce) {

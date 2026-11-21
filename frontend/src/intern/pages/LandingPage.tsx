@@ -480,14 +480,14 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-left">
             
-            {/* Module 1: LogLense */}
+            {/* Module 1: AI Project Analyser */}
             <div 
               onClick={() => handleProductTouch('/authority', 'admin')} 
               className="p-5 rounded-2xl border border-slate-200 hover:border-blue-500 bg-white shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
                 <span className="text-[10px] font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Module 1 • LogLense
+                  Module 1 • AI Project Analyser
                 </span>
                 <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 mt-3 mb-1">
                   Code Review & Audits
@@ -502,14 +502,14 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Module 2: InterviewX */}
+            {/* Module 2: AI Video Interviewer */}
             <div 
               onClick={() => handleProductTouch('/candidate', 'candidate')} 
               className="p-5 rounded-2xl border border-slate-200 hover:border-blue-500 bg-white shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
                 <span className="text-[10px] font-extrabold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Module 2 • InterviewX
+                  Module 2 • AI Video Interviewer
                 </span>
                 <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 mt-3 mb-1">
                   AI Video & Voice Interviews

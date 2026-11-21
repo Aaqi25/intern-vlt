@@ -40,7 +40,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
     ? [
         {
           id: 'm1',
-          name: 'LogLense Code Review',
+          name: 'AI Project Analyser',
           path: '/employer/loglense',
           icon: FileText,
           badge: 'Module 1',
@@ -49,7 +49,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
         },
         {
           id: 'm2',
-          name: 'InterviewX AI Platform',
+          name: 'AI Video Interviewer',
           path: '/employer/interviewx',
           icon: Video,
           badge: 'Module 2',
@@ -78,7 +78,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
     : [
         {
           id: 'm1',
-          name: 'LogLense Work Log',
+          name: 'AI Project Analyser Work Log',
           path: '/candidate/loglense',
           icon: FileText,
           badge: 'Module 1',
@@ -87,7 +87,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
         },
         {
           id: 'm2',
-          name: 'InterviewX Voice Room',
+          name: 'AI Video Interviewer Room',
           path: '/candidate/interviewx',
           icon: Video,
           badge: 'Module 2',

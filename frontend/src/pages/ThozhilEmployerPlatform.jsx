@@ -27,8 +27,8 @@ export const ThozhilEmployerPlatform = () => {
   const modules = [
     {
       id: 'm1',
-      badge: 'MODULE 1 • LOGLENSE',
-      title: 'LogLense Code Review & Log Management',
+      badge: 'MODULE 1 • AI PROJECT ANALYSER',
+      title: 'AI Project Analyser',
       folder: 'main/intern',
       desc: 'Automated first-level code audits against sprint deliverables. Generates line-level constructive reviews, technical scores, and TTS speech feedback.',
       route: '/employer/loglense',
@@ -42,8 +42,8 @@ export const ThozhilEmployerPlatform = () => {
     },
     {
       id: 'm2',
-      badge: 'MODULE 2 • INTERVIEWX AI',
-      title: 'InterviewX AI Video & Voice Platform',
+      badge: 'MODULE 2 • AI VIDEO INTERVIEWER',
+      title: 'AI Video Interviewer',
       folder: 'project-a',
       desc: 'Autonomous technical video & conversational voice interviews with real-time Sarvam AI audio processing, proctoring events, and candidate scorecards.',
       route: '/employer/interviewx',

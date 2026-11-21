@@ -573,9 +573,9 @@ export const CandidateDeviceCheck = () => {
                     type="button"
                     onClick={() => setOverrideShutterWarning(true)}
                     className="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors"
-                    title="Continue if testing in a virtual or dark test environment"
+                    title="Continue if testing in a low-light test environment"
                   >
-                    Skip (Demo Mode)
+                    Skip (Fast Verification)
                   </button>
                 </div>
               </div>

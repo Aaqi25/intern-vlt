@@ -75,7 +75,7 @@ export const DashboardLayout = ({ children }) => {
 
   // Real user details from Auth Context
   const userName = user?.name || 'Recruiter Admin';
-  const userEmail = user?.email || 'recruiter@interviewx.local';
+  const userEmail = user?.email || 'recruiter@thozhil.local';
   const userRole = user?.role || 'Recruiter Admin';
   const userInitials = userName
     .split(' ')
@@ -91,7 +91,7 @@ export const DashboardLayout = ({ children }) => {
       await logout();
       setLogoutModalOpen(false);
       setAccountMenuOpen(false);
-      showToast('Returned to InterviewX Home.', 'primary');
+      showToast('Returned to Thozhil Home.', 'primary');
       navigate('/', { replace: true });
     } catch (err) {
       showToast(err.message || 'Unable to sign out. Please try again.', 'danger');
@@ -105,10 +105,11 @@ export const DashboardLayout = ({ children }) => {
       label: 'PRODUCT MODULES',
       items: [
         { name: 'Command Center', path: '/recruiter', icon: LayoutGrid },
+        { name: 'Seek Thozhil - Job Seeking Platform', path: '/job-portal', icon: Briefcase },
         { name: 'AI Resume Screener', path: '/recruiter/resume-screener', icon: FileCheck2 },
-        { name: 'AI Video & Voice Interviews', path: '/recruiter/interviews', icon: Video },
-        { name: 'AI Coding Assessments', path: '/recruiter/coding-assessments', icon: Code2 },
-        { name: 'LogLense: Intern Reviews', path: '/recruiter/intern-logs', icon: FileText },
+        { name: 'AI Video Interviewer', path: '/recruiter/interviews', icon: Video },
+        { name: 'AI Coding Interviewer', path: '/recruiter/coding-assessments', icon: Code2 },
+        { name: 'AI Project Analyser', path: '/recruiter/intern-logs', icon: FileText },
       ]
     },
     {
@@ -470,7 +471,7 @@ export const DashboardLayout = ({ children }) => {
       <Modal
         isOpen={logoutModalOpen}
         onClose={() => !isLoggingOut && setLogoutModalOpen(false)}
-        title="Sign out of InterviewX?"
+        title="Sign out of Thozhil?"
         size="sm"
       >
         <div className="space-y-4 text-left">
@@ -479,7 +480,7 @@ export const DashboardLayout = ({ children }) => {
               <LogOut className="w-4 h-4" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to return to the InterviewX home portal? You can switch between candidate and employer workspaces at any time.
+              Are you sure you want to return to the Thozhil home portal? You can switch between candidate and employer workspaces at any time.
             </p>
           </div>
 

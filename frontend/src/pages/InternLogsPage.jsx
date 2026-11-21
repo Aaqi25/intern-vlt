@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   FileText,
   Code2,
-  Sparkles,
+  GitBranch,
+  Cpu,
   CheckCircle2,
   AlertTriangle,
   Volume2,
@@ -88,7 +89,7 @@ module.exports = router;`
       showToast('AI Code Review generated successfully!', 'success');
     } catch (err) {
       console.error('Review failed:', err);
-      showToast(err.message || 'Error communicating with LogLense review engine', 'danger');
+      showToast(err.message || 'Error communicating with AI Project Analyser review engine', 'danger');
     } finally {
       setIsReviewing(false);
     }
@@ -111,14 +112,13 @@ module.exports = router;`
       {/* Header */}
       <div className="pb-6 border-b border-slate-200">
         <div className="flex items-center space-x-2 text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">
-          <Sparkles className="w-4 h-4" />
-          <span>Thozhil Product Module 1</span>
+          <span>Module 03 · Enterprise Evaluation</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
-          LogLense: AI Internship Log Management & Code Review
+          AI Project Analyser
         </h1>
         <p className="text-sm text-slate-500 mt-0.5">
-          First-level automated audit of work submissions, line-level code reviews, and structured manager progress reporting.
+          Automated sprint deliverable and code diff evaluation with multi-model architectural risk audits.
         </p>
       </div>
 
@@ -169,7 +169,7 @@ module.exports = router;`
                 onClick={handleRunReview}
                 disabled={isReviewing}
               >
-                <Sparkles className="w-4 h-4 mr-1.5" />
+                <Cpu className="w-4 h-4 mr-1.5" />
                 {isReviewing ? 'Analyzing Code...' : 'Trigger AI Review'}
               </Button>
             </div>
@@ -212,7 +212,7 @@ module.exports = router;`
               <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-100 relative">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-xs text-blue-950 uppercase tracking-wider flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-blue-600" />
+                    <GitBranch className="w-4 h-4 text-blue-600" />
                     AI Feedback & Synthesis
                   </h4>
                   <button

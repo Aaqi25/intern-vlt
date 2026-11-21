@@ -16,7 +16,7 @@ const TEMPLATES = [
   },
   {
     name: 'CRDT Sync Template',
-    text: `### Sync Architecture Objective\nImplement conflict resolution handlers on the WebSocket channel.\n\n### Core Tasks\n- Hook up a last-write-wins CRDT strategy for updating card states.\n- Create a mock latency network testing suite.\n\n### Requirements\nLogs should show concurrent resolutions when multiple users drag cards.`
+    text: `### Sync Architecture Objective\nImplement conflict resolution handlers on the WebSocket channel.\n\n### Core Tasks\n- Hook up a last-write-wins CRDT strategy for updating card states.\n- Create a simulated latency network testing suite.\n\n### Requirements\nLogs should show concurrent resolutions when multiple users drag cards.`
   },
   {
     name: 'SaaS Layout Refactor',
@@ -317,7 +317,7 @@ export const AuthorityDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-textPrimary-light dark:text-textPrimary-dark">
-            Authority Panel
+            AI Project Analyser
           </h1>
           <p className="text-sm text-textSecondary-light dark:text-textSecondary-dark mt-1">
             Jira Board overview for <span className="font-bold text-textPrimary-light dark:text-textPrimary-dark">{activeProject.name}</span> ({activeProject.code})

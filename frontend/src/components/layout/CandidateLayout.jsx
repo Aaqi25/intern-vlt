@@ -235,7 +235,7 @@ export const CandidateLayout = ({ children }) => {
       >
         <div className="space-y-4 text-xs text-slate-600 text-left">
           <p className="leading-relaxed">
-            InterviewX provides a standardized, fair assessment environment designed to evaluate technical competencies objectively.
+            Thozhil provides a standardized, fair assessment environment designed to evaluate technical competencies objectively.
           </p>
 
           <div className="space-y-2.5 bg-slate-50 p-3.5 rounded-lg border border-slate-200">

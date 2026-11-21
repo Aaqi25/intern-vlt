@@ -859,7 +859,7 @@ export const LiveInterview = () => {
           <div className="flex flex-col items-center space-y-3">
             <div className="flex items-center space-x-2 text-xs font-semibold text-blue-600 uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-blue-600" />
-              <span>InterviewX • Conversational Assessment Track</span>
+              <span>AI Video Interviewer • Conversational Assessment Track</span>
             </div>
             
             <div className="w-16 h-16 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
@@ -869,7 +869,7 @@ export const LiveInterview = () => {
             <div className="text-center space-y-1">
               <h1 className="text-2xl font-bold tracking-tight text-slate-900">Technical Assessment Session</h1>
               <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
-                Participate in a calibrated, conversational technical evaluation guided by the InterviewX Assessment System.
+                Participate in a calibrated, conversational technical evaluation guided by the AI Video Interviewer System.
               </p>
             </div>
           </div>
@@ -976,7 +976,7 @@ export const LiveInterview = () => {
         <div className="flex items-center space-x-4 text-left">
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
-            <span className="text-xs font-bold text-slate-900 tracking-tight">InterviewX AI</span>
+            <span className="text-xs font-bold text-slate-900 tracking-tight">AI Video Interviewer</span>
           </div>
           <span className="text-slate-300">|</span>
           <div>

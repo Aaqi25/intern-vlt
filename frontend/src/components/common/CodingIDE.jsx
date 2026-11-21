@@ -291,6 +291,7 @@ export const CodingIDE = ({
   return (
     <div
       ref={containerRef}
+      data-lenis-prevent
       className={`bg-[#0d1117] border border-slate-800 rounded-xl overflow-hidden flex flex-col shadow-2xl font-mono text-left transition-all ${
         isFullscreen ? 'fixed inset-4 z-50 rounded-2xl border-blue-500/50 shadow-2xl' : 'h-full min-h-[460px]'
       } ${className}`}

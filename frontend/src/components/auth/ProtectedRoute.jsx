@@ -15,7 +15,17 @@ export const ProtectedRoute = ({ children, allowedRoles }) => {
     );
   }
 
-  // Direct access permitted without login requirement
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (allowedRoles && user?.role && !allowedRoles.includes(user.role)) {
+    if (user.role === 'candidate') {
+      return <Navigate to="/candidate/dashboard" replace />;
+    }
+    return <Navigate to="/recruiter" replace />;
+  }
+
   return children;
 };
 

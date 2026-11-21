@@ -23,14 +23,14 @@ export const ThozhilLandingPage = () => {
   const modules = [
     {
       badge: 'Module 1',
-      title: 'LogLense Code Audit',
+      title: 'AI Project Analyser',
       desc: 'Automated line-level review of code submissions against sprint deliverables with TTS voice synthesis.',
       icon: FileText,
       port: 'Port 3000'
     },
     {
       badge: 'Module 2',
-      title: 'InterviewX AI Platform',
+      title: 'AI Video Interviewer',
       desc: 'Real-time conversational voice and video interviews with Sarvam AI STT/TTS and proctoring telemetry.',
       icon: Video,
       port: 'Port 5000'
