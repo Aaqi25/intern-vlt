@@ -173,10 +173,6 @@ export default function UnifiedLandingPage() {
 
           {/* Central Headline with VLT Parallax Drift */}
           <div className="my-auto py-8 lg:py-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold tracking-wide mb-6">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Verified Enterprise Career Platform</span>
-            </div>
 
             <Parallax speed={1.08}>
               <h1 className="text-[clamp(2.5rem,6.2vw,5.75rem)] font-extrabold tracking-[-0.035em] leading-[1.05] text-slate-900 max-w-5xl">

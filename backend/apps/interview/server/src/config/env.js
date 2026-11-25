@@ -20,12 +20,14 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').default('development'),
     PORT: Joi.number().default(5000),
-    SUPABASE_URL: Joi.string().required().description('Supabase project URL'),
-    SUPABASE_SECRET_KEY: Joi.string().required().description('Supabase service role secret key'),
+    SUPABASE_URL: Joi.string().allow('').default('').description('Supabase project URL'),
+    SUPABASE_SECRET_KEY: Joi.string().allow('').default('').description('Supabase service role secret key'),
     SARVAM_API_KEY: Joi.string().allow('').description('Sarvam AI API key'),
     MAX_FILE_SIZE: Joi.number().default(5242880), // 5MB in bytes
     ALLOWED_ORIGINS: Joi.string().default('http://localhost:5173,http://localhost:5174'),
     RATE_LIMIT_MAX: Joi.number().description('Max requests per 15-minute rate limit window'),
+    // JWT secret for signing/verifying session tokens (at least 32 chars in production)
+    JWT_SECRET: Joi.string().default('dev-jwt-secret-change-in-production-minimum-32-chars!!').description('JWT signing secret'),
   })
   .unknown();
 
@@ -45,6 +47,7 @@ export const env = {
   maxFileSize: envVars.MAX_FILE_SIZE,
   allowedOrigins: envVars.ALLOWED_ORIGINS.split(','),
   rateLimitMax: envVars.RATE_LIMIT_MAX || (envVars.NODE_ENV === 'production' ? 200 : 10000),
+  jwtSecret: envVars.JWT_SECRET,
 };
 
 export const config = env;

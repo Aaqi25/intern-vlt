@@ -143,9 +143,15 @@ export const createInterview = async (interviewBody) => {
 };
 
 export const queryInterviews = async (filter = {}) => {
+  // Apply pagination to prevent unbounded queries (P2 fix)
+  const limit = Math.min(parseInt(filter.limit, 10) || 50, 200);
+  const offset = Math.max(parseInt(filter.offset, 10) || 0, 0);
+
   const { data, error } = await supabase
     .from('interviews')
-    .select('*, jobs(*), candidates!candidate_id(*), questions(*)');
+    .select('*, jobs(*), candidates!candidate_id(*), questions(*)')
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (error) throw error;
   let results = data.map(mapDbToInterview);
@@ -178,6 +184,7 @@ export const queryInterviews = async (filter = {}) => {
 };
 
 export const getInterviewById = async (id) => {
+
   const { data, error } = await supabase
     .from('interviews')
     .select('*, jobs(*), candidates!candidate_id(*), questions(*)')

@@ -11,6 +11,7 @@ import notFoundMiddleware from './middleware/notFoundMiddleware.js';
 import { errorConverter, errorHandler } from './middleware/errorMiddleware.js';
 
 import { authenticate } from './middleware/authMiddleware.js';
+import { requireAuth, sanitizeRoleHeader } from './middleware/authGuard.js';
 
 // Route imports
 import candidateRoutes from './routes/candidateRoutes.js';
@@ -32,11 +33,11 @@ if (config.env !== 'test') {
   app.use(morgan(config.env === 'development' ? 'dev' : 'combined'));
 }
 
-// Parse json request body
-app.use(express.json());
+// Parse json request body — 10 MB limit prevents memory exhaustion
+app.use(express.json({ limit: '10mb' }));
 
-// Parse urlencoded request body
-app.use(express.urlencoded({ extended: true }));
+// Parse urlencoded request body — 10 MB limit
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Activity heartbeat route (handles browser extensions or local IDE activity pings cleanly)
 app.all('/api/activity', (req, res) => {
@@ -83,6 +84,8 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 app.use('/api', authenticate);
+// Sanitize and validate role/email headers on every request (prevents header injection / role escalation)
+app.use('/api', sanitizeRoleHeader);
 
 // Serve uploads folder statically for access to resume documents
 app.use('/uploads', express.static('uploads'));
@@ -104,13 +107,13 @@ app.get('/api/health', async (req, res, next) => {
   }
 });
 
-// Bind route controllers
-app.use('/api/candidates', candidateRoutes);
-app.use('/api/jobs', jobRoutes);
-app.use('/api/interviews', interviewRoutes);
-app.use('/api/resumes', resumeRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/voice', voiceRoutes);
+// Bind route controllers — requireAuth enforces token presence on all data routes
+app.use('/api/candidates', requireAuth, candidateRoutes);
+app.use('/api/jobs', requireAuth, jobRoutes);
+app.use('/api/interviews', requireAuth, interviewRoutes);
+app.use('/api/resumes', requireAuth, resumeRoutes);
+app.use('/api/reports', requireAuth, reportRoutes);
+app.use('/api/voice', requireAuth, voiceRoutes);
 
 // Send 404 back for any unknown api request
 app.use(notFoundMiddleware);

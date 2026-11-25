@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Cpu } from 'lucide-react';
 import BrandLogo from '../BrandLogo';
 
 export const VltFooter = () => {
@@ -23,16 +22,6 @@ export const VltFooter = () => {
             <p className="text-neutral-400 text-sm leading-relaxed max-w-sm mb-6">
               THOZHIL unites job discovery, resume intelligence, work-log analysis, conversational AI video interviewing, and hardened Docker coding evaluation into one sovereign hiring engine.
             </p>
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider bg-neutral-900 border border-neutral-800 text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                SYSTEM ALL GREEN
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider bg-neutral-900 border border-neutral-800 text-neutral-400">
-                <Cpu className="w-3 h-3 text-neutral-400" />
-                DOCKER ISOLATION: ACTIVE
-              </span>
-            </div>
           </div>
 
           {/* Col 2: Core Modules */}
@@ -168,11 +157,6 @@ export const VltFooter = () => {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500 font-mono">
           <div>
             &copy; {new Date().getFullYear()} THOZHIL Ecosystem. All rights reserved.
-          </div>
-          <div className="flex items-center gap-6">
-            <span>Security: Network-Isolated Sandboxing</span>
-            <span>Zero Data Leakage Engine</span>
-            <span>Privacy Filtered Deliberations</span>
           </div>
         </div>
 

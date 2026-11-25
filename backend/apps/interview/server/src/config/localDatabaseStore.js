@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -473,12 +474,15 @@ class LocalDatabaseStore {
   }
 
   saveData(dataToSave = null) {
-    try {
-      const data = dataToSave || this.data;
-      fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (err) {
-      console.error('[LocalDatabaseStore] Error persisting DB file:', err.message);
-    }
+    // Schedule a debounced async write to avoid blocking the Node.js event loop.
+    // Multiple calls within 300ms are coalesced into a single write operation.
+    const data = dataToSave || this.data;
+    if (this._saveTimer) clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => {
+      fsPromises.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8').catch((err) => {
+        console.error('[LocalDatabaseStore] Error persisting DB file:', err.message);
+      });
+    }, 300);
   }
 
   getTable(tableName) {
