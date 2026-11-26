@@ -44,7 +44,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
           path: '/employer/loglense',
           icon: FileText,
           badge: 'Module 1',
-          port: '3000',
+          port: '5030',
           desc: 'Automated sprint log audit & line-level review'
         },
         {
@@ -62,7 +62,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
           path: '/employer/resume-screener',
           icon: FileCheck2,
           badge: 'Module 3',
-          port: '8000',
+          port: '5020',
           desc: 'Multi-factor resume parsing & ranking'
         },
         {
@@ -82,7 +82,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
           path: '/candidate/loglense',
           icon: FileText,
           badge: 'Module 1',
-          port: '3000',
+          port: '5030',
           desc: 'Submit daily deliverables for instant review'
         },
         {
@@ -100,7 +100,7 @@ export const ThozhilPlatformLayout = ({ children, targetRole = 'employer' }) => 
           path: '/candidate/resume-check',
           icon: FileCheck2,
           badge: 'Module 3',
-          port: '8000',
+          port: '5020',
           desc: 'Upload resume & view match against roles'
         },
         {

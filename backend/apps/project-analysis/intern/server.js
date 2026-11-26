@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 5030;
 const supabase = require('./db');
 const { reviewLog } = require('./reviewer');
 const upload = multer({ storage: multer.memoryStorage() });

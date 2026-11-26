@@ -1,15 +1,18 @@
 import http from 'http';
+import https from 'https';
 import url from 'url';
 import fs from 'fs';
 import path from 'path';
 import dns from 'dns';
+import crypto from 'crypto';
 
 try {
   dns.setDefaultResultOrder('ipv4first');
 } catch (e) {}
 
-let SUPABASE_URL = process.env.SUPABASE_URL || 'https://xizorwojjsphckzmoazv.supabase.co';
+let SUPABASE_URL = process.env.SUPABASE_URL || '';
 let SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || '';
+let JWT_SECRET = process.env.JWT_SECRET || 'dev-jwt-secret-change-in-production-minimum-32-chars!!';
 
 try {
   const envPath = path.resolve(process.cwd(), '../../.env');
@@ -18,16 +21,49 @@ try {
     for (const line of envContent.split('\n')) {
       const match = line.match(/^\s*([\w_]+)\s*=\s*["']?(.*?)["']?\s*$/);
       if (match) {
-        if (match[1] === 'SUPABASE_URL') SUPABASE_URL = match[2];
-        if (match[1] === 'SUPABASE_ANON_KEY') SUPABASE_ANON_KEY = match[2];
+        if (match[1] === 'SUPABASE_URL' && !SUPABASE_URL) SUPABASE_URL = match[2];
+        if (match[1] === 'SUPABASE_ANON_KEY' && !SUPABASE_ANON_KEY) SUPABASE_ANON_KEY = match[2];
+        if (match[1] === 'JWT_SECRET' && !process.env.JWT_SECRET) JWT_SECRET = match[2];
       }
     }
   }
 } catch (e) {}
 
+function verifyJwtToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const [encodedHeader, encodedPayload, encodedSig] = parts;
+  const expectedSig = Buffer.from(
+    crypto.createHmac('sha256', JWT_SECRET).update(`${encodedHeader}.${encodedPayload}`).digest()
+  )
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  const sigBuf = Buffer.from(encodedSig);
+  const expBuf = Buffer.from(expectedSig);
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    return null;
+  }
+  try {
+    const padded = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
+    const padLen = (4 - (padded.length % 4)) % 4;
+    const payload = JSON.parse(Buffer.from(padded + '='.repeat(padLen), 'base64').toString('utf-8'));
+    if (typeof payload.exp === 'number' && payload.exp < Math.floor(Date.now() / 1000)) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
 async function supabaseFetch(endpoint, options = {}) {
-  const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
-  const res = await fetch(url, {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error('Supabase credentials are not configured');
+  }
+  const target = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+  const res = await fetch(target, {
     ...options,
     headers: {
       'apikey': SUPABASE_ANON_KEY,
@@ -50,7 +86,8 @@ const TARGETS = {
   BACKEND_CORE: process.env.BACKEND_CORE_URL || 'http://localhost:5000',
   JOB_PORTAL_API: process.env.JOB_PORTAL_API_URL || 'http://localhost:5050',
   PROJECT_C_API: process.env.PROJECT_C_API_URL || 'http://localhost:5030',
-  RESUME_SCREENER_API: process.env.RESUME_SCREENER_URL || 'http://localhost:8000',
+  RESUME_SCREENER_API: process.env.RESUME_SCREENER_URL || 'http://localhost:5020',
+  SANDBOX_API: process.env.SANDBOX_API_URL || 'http://localhost:8000',
 };
 
 // Canonical In-Memory Intern Data Storage
@@ -264,12 +301,13 @@ const CANONICAL_CODING_ASSIGNMENTS = [
 
 // Helper to resolve upstream URL target based on request path and referer
 function getUpstreamTarget(reqUrl, req) {
-  if (reqUrl.startsWith('/api/auth')) return 'AUTH_INTERNAL';
+  if (reqUrl.startsWith('/api/auth')) return TARGETS.BACKEND_CORE;
   if (reqUrl.startsWith('/api/interns')) return 'INTERNS_INTERNAL';
   if (reqUrl.startsWith('/api/coding')) return 'CODING_INTERNAL';
+  if (reqUrl.startsWith('/api/v1/sandbox')) return TARGETS.SANDBOX_API;
   if (reqUrl.startsWith('/api/job-portal')) return TARGETS.JOB_PORTAL_API;
 
-  // AI Resume Screener API (Port 8000)
+  // AI Resume Screener API (Port 5020)
   if (
     reqUrl.startsWith('/api/screener') ||
     reqUrl.startsWith('/api/jobs') ||
@@ -290,12 +328,16 @@ function getUpstreamTarget(reqUrl, req) {
     return TARGETS.PROJECT_C_API;
   }
 
-  // Core Backend APIs (Interviews, Candidates, Voice, Activities, Uploads)
+  // Core Backend APIs (Interviews, Candidates, Resumes, Reports, Voice, Health, Uploads)
   if (
     reqUrl.startsWith('/api/interviews') ||
     reqUrl.startsWith('/api/candidates') ||
+    reqUrl.startsWith('/api/resumes') ||
+    reqUrl.startsWith('/api/reports') ||
     reqUrl.startsWith('/api/voice') ||
     reqUrl.startsWith('/api/activities') ||
+    reqUrl.startsWith('/api/activity') ||
+    reqUrl.startsWith('/api/health') ||
     reqUrl.startsWith('/uploads')
   ) {
     return TARGETS.BACKEND_CORE;
@@ -320,92 +362,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-
-
-  // 1. Auth Bridge API (Supabase Integrated)
-  // 1. Auth Bridge API (Supabase Integrated + Universal Dual-Role Auth)
-  if (pathName === '/api/auth/login' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', async () => {
-      try {
-        const { username, password, email, role } = JSON.parse(body || '{}');
-        const userEmail = (email || username || '').trim().toLowerCase();
-
-        if (!userEmail) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, message: 'Email address is required' }));
-          return;
-        }
-
-        // 1. Check Supabase users table
-        try {
-          const dbUsers = await supabaseFetch(`users?email=eq.${encodeURIComponent(userEmail)}&select=id,email,firstName,lastName,isActive,roleId,roles(name)`);
-          if (dbUsers && dbUsers.length > 0) {
-            const u = dbUsers[0];
-            const roleName = u.roles?.name || (role === 'candidate' ? 'CANDIDATE' : 'RECRUITER');
-            const userObj = {
-              id: u.id,
-              role: roleName,
-              name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || userEmail.split('@')[0],
-              email: u.email
-            };
-            res.writeHead(200, {
-              'Content-Type': 'application/json',
-              'Set-Cookie': `thozhil_auth_token=${u.id}; Path=/; HttpOnly`
-            });
-            res.end(JSON.stringify({
-              success: true,
-              token: `jwt-${u.id}-${Date.now()}`,
-              user: userObj
-            }));
-            return;
-          }
-        } catch (dbErr) {
-          console.warn('[Gateway] Supabase login query warning:', dbErr.message);
-        }
-
-        // 2. Fallback / Universal Dual-Role Authentication (Candidate or Employer)
-        const isEmployer = (role && (role.toLowerCase().includes('admin') || role.toLowerCase().includes('employer') || role.toLowerCase().includes('recruiter') || role.toLowerCase().includes('authority'))) || 
-                           userEmail.includes('admin') || userEmail.includes('recruiter') || userEmail.includes('employer');
-        
-        const assignedRole = isEmployer ? 'RECRUITER' : 'CANDIDATE';
-        const namePart = userEmail.split('@')[0].replace(/[._-]/g, ' ');
-        const displayName = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || (isEmployer ? 'Recruiter Admin' : 'Candidate');
-
-        const sessionUser = {
-          id: `usr_${assignedRole.toLowerCase()}_${Date.now().toString(36)}`,
-          email: userEmail,
-          name: displayName,
-          role: assignedRole
-        };
-
-        res.writeHead(200, {
-          'Content-Type': 'application/json',
-          'Set-Cookie': `thozhil_auth_token=${sessionUser.id}; Path=/; HttpOnly`
-        });
-        res.end(JSON.stringify({
-          success: true,
-          token: `jwt-${sessionUser.id}-${Date.now()}`,
-          user: sessionUser
-        }));
-        return;
-      } catch (e) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: false, message: 'Invalid Credentials or format' }));
-      }
-    });
-    return;
-  }
-
-  if (pathName === '/api/auth/session') {
+  if (pathName === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      authenticated: true,
-      user: { id: 'admin-001', role: 'AUTHORITY', name: 'Sarah Jenkins', email: 'authority@platform.com' }
-    }));
+    res.end(JSON.stringify({ service: 'thozhil-gateway', status: 'healthy' }));
     return;
   }
+
+  // Note: /api/auth/* is forwarded directly to BACKEND_CORE for real scrypt + HS256 JWT authentication.
 
   // 2. Unified Intern Identity API (Supabase Integrated)
   if (pathName === '/api/interns' && req.method === 'GET') {
@@ -482,6 +445,20 @@ const server = http.createServer(async (req, res) => {
     const internId = parts[3];
 
     if (parts.length === 5 && parts[4] === 'decision' && req.method === 'PATCH') {
+      const authHeader = req.headers.authorization || '';
+      const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+      const claims = verifyJwtToken(token);
+      if (!claims) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Authentication required to record intern decisions.' }));
+        return;
+      }
+      const roleLower = String(claims.role || '').toLowerCase();
+      if (roleLower === 'candidate' || roleLower === 'intern') {
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Employer/Authority role required.' }));
+        return;
+      }
       let body = '';
       req.on('data', chunk => { body += chunk; });
       req.on('end', () => {
@@ -620,30 +597,32 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 3. Upstream Forwarding Proxy
+  // 3. Upstream Forwarding Proxy (supports both http:// and https:// upstreams)
   const targetUrl = getUpstreamTarget(req.url || '/', req);
-  const targetParsed = url.parse(targetUrl);
+  const targetParsed = new URL(targetUrl);
+  const isHttps = targetParsed.protocol === 'https:';
+  const transport = isHttps ? https : http;
 
   let proxyPath = req.url;
   if (targetUrl === TARGETS.RESUME_SCREENER_API) {
     proxyPath = req.url.replace(/^\/api\/screener/, '/api');
+  } else if (targetUrl === TARGETS.PROJECT_C_API) {
+    proxyPath = req.url.replace(/^\/api(?=\/(work-descriptions|logs|review))/, '');
   }
 
+  const upstreamHeaders = { ...req.headers };
+  delete upstreamHeaders['content-length'];
+  upstreamHeaders.host = targetParsed.host;
+
   const proxyReqOptions = {
-    hostname: targetParsed.hostname || 'localhost',
-    port: targetParsed.port ? parseInt(targetParsed.port, 10) : 80,
+    hostname: targetParsed.hostname,
+    port: targetParsed.port ? parseInt(targetParsed.port, 10) : (isHttps ? 443 : 80),
     path: proxyPath,
     method: req.method,
-    headers: {
-      ...req.headers,
-      host: `${targetParsed.hostname}:${targetParsed.port}`,
-      'x-user-role': 'recruiter',
-      'x-user-id': 'admin-001',
-      authorityId: 'manager-001'
-    }
+    headers: upstreamHeaders
   };
 
-  const proxyReq = http.request(proxyReqOptions, (proxyRes) => {
+  const proxyReq = transport.request(proxyReqOptions, (proxyRes) => {
     res.writeHead(proxyRes.statusCode || 502, proxyRes.headers);
     proxyRes.pipe(res, { end: true });
   });
@@ -653,7 +632,7 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({
       success: false,
       error: 'Bad Gateway',
-      message: `Could not connect to target service at ${targetUrl}`,
+      message: `Could not connect to target service at ${targetUrl}: ${err.message}`,
       path: req.url
     }));
   });
@@ -671,13 +650,17 @@ server.on('upgrade', (req, socket, head) => {
     targetUrl = TARGETS.UNIFIED_UI;
   }
 
-  const targetParsed = url.parse(targetUrl);
-  const proxyReq = http.request({
-    hostname: targetParsed.hostname || 'localhost',
-    port: targetParsed.port ? parseInt(targetParsed.port, 10) : 80,
+  const targetParsed = new URL(targetUrl);
+  const isHttps = targetParsed.protocol === 'https:';
+  const transport = isHttps ? https : http;
+
+  const upgradeHeaders = { ...req.headers, host: targetParsed.host };
+  const proxyReq = transport.request({
+    hostname: targetParsed.hostname,
+    port: targetParsed.port ? parseInt(targetParsed.port, 10) : (isHttps ? 443 : 80),
     path: req.url,
     method: req.method,
-    headers: req.headers
+    headers: upgradeHeaders
   });
 
   proxyReq.on('upgrade', (proxyRes, proxySocket, proxyHead) => {

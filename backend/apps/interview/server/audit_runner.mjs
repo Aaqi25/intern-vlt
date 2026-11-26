@@ -76,10 +76,10 @@ function makeRequest(method, path, headers = {}, body = null) {
   });
 }
 
-const A = {
-  'authorization': 'Bearer audit-test-token-dev',
+let A = {
+  'authorization': '',
   'x-user-role': 'recruiter admin',
-  'x-user-email': 'admin@audit.test',
+  'x-user-email': 'recruiter@thozhil.local',
   'content-type': 'application/json',
 };
 
@@ -88,6 +88,14 @@ async function run() {
   console.log('  INTERVIEWX AUDIT TEST SUITE');
   console.log('════════════════════════════════════════');
 
+  // 0. Authenticate to obtain a real signed JWT
+  const loginRes = await makeRequest('POST', '/api/auth/login', {}, {
+    email: 'recruiter@thozhil.local',
+    password: 'Recruiter@123!'
+  });
+  ok('POST /api/auth/login with valid credentials → 200', loginRes.status === 200 && !!loginRes.json?.token, `status=${loginRes.status}`);
+  A.authorization = `Bearer ${loginRes.json?.token || ''}`;
+
   // 1. Health
   console.log('\n[1] HEALTH & STARTUP');
   let r = await makeRequest('GET', '/api/health');
@@ -95,11 +103,13 @@ async function run() {
   ok('Health body has success:true', r.json?.success === true, `success=${r.json?.success} body=${r.body?.slice(0,80)}`);
 
   // 2. Auth Guard
-  console.log('\n[2] AUTH GUARD — no token → 401');
+  console.log('\n[2] AUTH GUARD — no token / forged token → 401');
   for (const route of ['/api/candidates', '/api/jobs', '/api/interviews', '/api/resumes']) {
     r = await makeRequest('GET', route);
     ok(`${route} without token → 401`, r.status === 401, `status=${r.status}`);
   }
+  r = await makeRequest('GET', '/api/candidates', { authorization: 'Bearer forged-unsigned-token' });
+  ok('/api/candidates with forged token → 401', r.status === 401, `status=${r.status}`);
 
   // 3. Authenticated
   console.log('\n[3] AUTHENTICATED REQUESTS');
@@ -111,7 +121,7 @@ async function run() {
   // 4. Role Injection
   console.log('\n[4] ROLE HEADER INJECTION');
   r = await makeRequest('GET', '/api/candidates', {
-    'authorization': 'Bearer audit-test-token-dev',
+    'authorization': A.authorization,
     'x-user-role': "SUPERADMIN'; DROP TABLE users;--",
     'x-user-email': 'admin@audit.test',
   });

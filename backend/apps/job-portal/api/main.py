@@ -355,7 +355,7 @@ def create_app(
         item.strip()
         for item in os.getenv(
             "JOB_PORTAL_ALLOWED_ORIGINS",
-            "http://localhost:3000,http://localhost:5173,http://localhost:8080",
+            "http://localhost,http://localhost:3000,http://localhost:5173,http://localhost:8080",
         ).split(",")
         if item.strip()
     ]

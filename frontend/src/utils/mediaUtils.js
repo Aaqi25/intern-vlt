@@ -6,8 +6,8 @@ export const getMediaUrl = (url) => {
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('blob:') || url.startsWith('data:')) {
     return url;
   }
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-  const serverBase = apiBase.replace(/\/api\/?$/, '');
+  const apiBase = import.meta.env.VITE_API_URL || '/api';
+  const serverBase = apiBase === '/api' ? '' : apiBase.replace(/\/api\/?$/, '');
   const normalizedPath = url.startsWith('/') ? url : `/${url}`;
   return `${serverBase}${normalizedPath}`;
 };

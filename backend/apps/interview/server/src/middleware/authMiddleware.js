@@ -1,21 +1,30 @@
 import ApiError from '../utils/ApiError.js';
 import supabase from '../config/supabase.js';
+import { config } from '../config/env.js';
+import { verifyJwt } from '../utils/jwt.js';
 
 /**
- * Authentication and identity context resolver
- * Reads token and client-authenticated headers, resolving authoritative user context.
+ * Authentication and identity context resolver.
+ * Derives user identity and role exclusively from a cryptographically verified JWT.
  */
 export const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || '';
-    const userRole = req.headers['x-user-role'] || '';
-    const userEmail = (req.headers['x-user-email'] || '').trim().toLowerCase();
-    const candidateIdHeader = req.headers['x-candidate-id'] || req.query.candidateId || null;
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    const claims = token ? verifyJwt(token, config.jwtSecret) : null;
 
-    let candidateId = candidateIdHeader;
+    if (!claims) {
+      req.user = null;
+      return next();
+    }
 
-    // If user claims to be a candidate or has a candidate email, resolve candidate record
-    if (userEmail && !candidateId) {
+    const userRole = String(claims.role || '').trim();
+    const userEmail = String(claims.email || '').trim().toLowerCase();
+    let candidateId = claims.candidateId || null;
+
+    const isCandidate = userRole.toLowerCase() === 'candidate' || userRole.toLowerCase() === 'intern';
+
+    if (isCandidate && userEmail && !candidateId) {
       const { data: cand } = await supabase
         .from('candidates')
         .select('id, email, role')
@@ -27,14 +36,12 @@ export const authenticate = async (req, res, next) => {
       }
     }
 
-    const isCandidate = userRole.toLowerCase() === 'candidate' || (candidateId && !userRole.toLowerCase().includes('recruiter'));
-
     req.user = {
-      token: authHeader.replace(/^Bearer\s+/i, ''),
+      token,
       role: isCandidate ? 'Candidate' : (userRole || 'Recruiter Admin'),
       email: userEmail,
       candidateId: candidateId || null,
-      id: req.headers['x-user-id'] || candidateId || 'usr_anonymous'
+      id: claims.sub || candidateId || 'usr_authenticated'
     };
 
     next();
@@ -68,7 +75,6 @@ export const enforceCandidateScope = (resourceCandidateIdParam = 'candidateId') 
       return next(new ApiError(401, 'Authentication required'));
     }
 
-    // Recruiters have full access
     if (req.user.role !== 'Candidate') {
       return next();
     }

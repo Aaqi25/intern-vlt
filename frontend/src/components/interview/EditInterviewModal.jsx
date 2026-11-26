@@ -23,37 +23,36 @@ export const EditInterviewModal = ({
   onUpdated,
   showToast
 }) => {
-  if (!isOpen || !interview) return null;
-
-  const status = (interview.status || 'Draft').toLowerCase();
+  const safeInterview = interview || {};
+  const status = (safeInterview.status || 'Draft').toLowerCase();
   const isCompleted = status === 'completed' || status === 'evaluated';
   const isInProgress = status === 'in progress' || status === 'in_progress' || status === 'active_session';
   const isLocked = isCompleted || isInProgress;
 
   // Form state
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'questions' | 'proctoring'
-  const [title, setTitle] = useState(interview.title || '');
-  const [jobRole, setJobRole] = useState(interview.jobRole || interview.title || '');
-  const [department, setDepartment] = useState(interview.department || 'Engineering');
-  const [description, setDescription] = useState(interview.description || interview.settings?.description || '');
-  const [duration, setDuration] = useState(interview.duration || 30);
-  const [interviewType, setInterviewType] = useState(interview.type || interview.interviewType || 'async');
-  const [statusVal, setStatusVal] = useState(interview.status || 'Active');
+  const [title, setTitle] = useState(safeInterview.title || '');
+  const [jobRole, setJobRole] = useState(safeInterview.jobRole || safeInterview.title || '');
+  const [department, setDepartment] = useState(safeInterview.department || 'Engineering');
+  const [description, setDescription] = useState(safeInterview.description || safeInterview.settings?.description || '');
+  const [duration, setDuration] = useState(safeInterview.duration || 30);
+  const [interviewType, setInterviewType] = useState(safeInterview.type || safeInterview.interviewType || 'async');
+  const [statusVal, setStatusVal] = useState(safeInterview.status || 'Active');
 
   // Language state
-  const currentLang = interview.language || interview.settings?.language;
+  const currentLang = safeInterview.language || safeInterview.settings?.language;
   const currentCode = typeof currentLang === 'object' ? currentLang?.code : currentLang;
   const currentMode = typeof currentLang === 'object' ? currentLang?.mode : (typeof currentLang === 'string' && currentLang.includes('codemix') ? 'codemix' : 'native');
 
-  const initialLangValue = currentCode === 'ta-IN' 
-    ? (currentMode === 'codemix' ? 'ta-IN-codemix' : 'ta-IN-native') 
+  const initialLangValue = currentCode === 'ta-IN'
+    ? (currentMode === 'codemix' ? 'ta-IN-codemix' : 'ta-IN-native')
     : 'en-IN';
 
   const [languageKey, setLanguageKey] = useState(initialLangValue);
 
   // Questions state
   const [questions, setQuestions] = useState(
-    (interview.questions || []).map((q, idx) => ({
+    (safeInterview.questions || []).map((q, idx) => ({
       id: q.id || `q-${idx}-${Date.now()}`,
       text: q.text || '',
       category: q.category || 'General',
@@ -67,13 +66,15 @@ export const EditInterviewModal = ({
   const [newQuestionDuration, setNewQuestionDuration] = useState(180);
 
   // Proctoring settings
-  const [proctorTabSwitch, setProctorTabSwitch] = useState(interview.settings?.proctorTabSwitch ?? true);
-  const [proctorBlockCopyPaste, setProctorBlockCopyPaste] = useState(interview.settings?.proctorBlockCopyPaste ?? true);
-  const [proctorScreenShare, setProctorScreenShare] = useState(interview.settings?.proctorScreenShare ?? true);
-  const [instructions, setInstructions] = useState(interview.settings?.instructions || '');
+  const [proctorTabSwitch, setProctorTabSwitch] = useState(safeInterview.settings?.proctorTabSwitch ?? true);
+  const [proctorBlockCopyPaste, setProctorBlockCopyPaste] = useState(safeInterview.settings?.proctorBlockCopyPaste ?? true);
+  const [proctorScreenShare, setProctorScreenShare] = useState(safeInterview.settings?.proctorScreenShare ?? true);
+  const [instructions, setInstructions] = useState(safeInterview.settings?.instructions || '');
 
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  if (!isOpen || !interview) return null;
 
   const handleAddQuestion = () => {
     if (!newQuestionText.trim()) return;

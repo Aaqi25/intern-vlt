@@ -1,0 +1,117 @@
+services:
+  interview-api:
+    build:
+      context: ./backend/apps/interview/server
+    container_name: thozhil-interview-api
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-in-production-minimum-32-chars!!}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost,http://localhost:8080,http://localhost:5173}
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}
+      - SARVAM_API_KEY=${SARVAM_API_KEY:-}
+    ports:
+      - "5000:5000"
+    volumes:
+      - interview_data:/app/data
+      - interview_uploads:/app/uploads
+    restart: unless-stopped
+
+  resume-api:
+    build:
+      context: ./backend/apps/resume
+    container_name: thozhil-resume-api
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    ports:
+      - "5020:5020"
+    volumes:
+      - resume_uploads:/app/uploads
+    restart: unless-stopped
+
+  project-analysis-api:
+    build:
+      context: ./backend/apps/project-analysis/intern
+    container_name: thozhil-project-analysis-api
+    environment:
+      - PORT=5030
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_KEY=${SUPABASE_SECRET_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    ports:
+      - "5030:5030"
+    restart: unless-stopped
+
+  job-portal-api:
+    build:
+      context: ./backend/apps/job-portal/api
+    container_name: thozhil-job-portal-api
+    environment:
+      - JOB_PORTAL_DATABASE_PATH=/app/data/job_portal.db
+      - JOB_PORTAL_RESUMES_PATH=/app/data/resumes
+      - JOB_PORTAL_ALLOWED_ORIGINS=${JOB_PORTAL_ALLOWED_ORIGINS:-http://localhost,http://localhost:8080,http://localhost:5173}
+    ports:
+      - "5050:5050"
+    volumes:
+      - job_portal_data:/app/data
+    restart: unless-stopped
+
+  sandbox-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: thozhil-sandbox-api
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: ./backend/packages/gateway
+    container_name: thozhil-gateway
+    environment:
+      - PORT=8080
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-in-production-minimum-32-chars!!}
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-}
+      - BACKEND_CORE_URL=http://interview-api:5000
+      - RESUME_SCREENER_URL=http://resume-api:5020
+      - PROJECT_C_API_URL=http://project-analysis-api:5030
+      - JOB_PORTAL_API_URL=http://job-portal-api:5050
+      - SANDBOX_API_URL=http://sandbox-api:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - interview-api
+      - resume-api
+      - project-analysis-api
+      - job-portal-api
+      - sandbox-api
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: thozhil-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - interview-api
+      - resume-api
+      - project-analysis-api
+      - job-portal-api
+      - sandbox-api
+      - gateway
+    restart: unless-stopped
+
+volumes:
+  interview_data:
+  interview_uploads:
+  resume_uploads:
+  job_portal_data:

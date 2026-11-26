@@ -26,7 +26,7 @@ export const ThozhilLandingPage = () => {
       title: 'AI Project Analyser',
       desc: 'Automated line-level review of code submissions against sprint deliverables with TTS voice synthesis.',
       icon: FileText,
-      port: 'Port 3000'
+      port: 'Port 5030'
     },
     {
       badge: 'Module 2',
@@ -40,7 +40,7 @@ export const ThozhilLandingPage = () => {
       title: 'AI Resume Screener',
       desc: 'Multi-dimensional resume parsing, semantic qualification scoring, gap analysis, and candidate ranking.',
       icon: FileCheck2,
-      port: 'Port 8000'
+      port: 'Port 5020'
     },
     {
       badge: 'Module 4',

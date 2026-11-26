@@ -2,6 +2,7 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { hashPassword } from '../utils/jwt.js';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'local_db.json');
@@ -442,7 +443,33 @@ const getDefaultSeedData = () => {
       }
     ],
     resumes: [],
-    proctoring_observations: []
+    proctoring_observations: [],
+    users: [
+      {
+        id: 'usr-demo-recruiter',
+        email: 'recruiter@thozhil.local',
+        passwordHash: hashPassword('Recruiter@123!'),
+        name: 'Sarah Jenkins',
+        firstName: 'Sarah',
+        lastName: 'Jenkins',
+        role: 'Recruiter Admin',
+        candidateId: null,
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 30).toISOString()
+      },
+      {
+        id: 'usr-demo-candidate',
+        email: 'candidate@thozhil.local',
+        passwordHash: hashPassword('Candidate@123!'),
+        name: 'Alexander Wright',
+        firstName: 'Alexander',
+        lastName: 'Wright',
+        role: 'Candidate',
+        candidateId: cand1Id,
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 30).toISOString()
+      }
+    ]
   };
 };
 
@@ -880,10 +907,9 @@ class LocalStorageManager {
       getPublicUrl: (filePath) => {
         // Standardized static file endpoint served by Express app.use('/uploads', express.static('uploads'))
         const cleanPath = filePath.replace(/\\/g, '/');
-        const port = process.env.PORT || 5000;
         return {
           data: {
-            publicUrl: `http://localhost:${port}/uploads/${bucketName}/${cleanPath}`
+            publicUrl: `/uploads/${bucketName}/${cleanPath}`
           }
         };
       },

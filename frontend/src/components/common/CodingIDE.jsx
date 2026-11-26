@@ -115,157 +115,133 @@ export const CodingIDE = ({
     }
   };
 
-  // Run Code in Client Sandbox
-  const runCode = () => {
+  // Run Code via Backend Docker Sandbox API (/api/v1/sandbox/execution/run)
+  const runCode = async () => {
     if (!code.trim()) {
       setTerminalLogs([{ type: 'error', text: 'Error: Code editor is empty. Write a solution before running.' }]);
       setActiveBottomTab('terminal');
       return;
     }
 
+    const sandboxLangMap = {
+      python: 'python',
+      javascript: 'javascript',
+      cpp: 'cpp',
+      java: 'java',
+    };
+    const sandboxLanguage = sandboxLangMap[currentLang];
+
     setIsRunning(true);
     setActiveBottomTab('terminal');
-    setTerminalLogs([{ type: 'info', text: `Compiling and executing in ${currentLang.toUpperCase()} sandbox...` }]);
+    setTerminalLogs([{ type: 'info', text: `Submitting ${currentLang.toUpperCase()} code to isolated Docker sandbox...` }]);
 
     const startTime = performance.now();
 
-    setTimeout(() => {
-      const logs = [];
-      const originalConsoleLog = console.log;
-      console.log = (...args) => {
-        logs.push({
-          type: 'log',
-          text: args.map((a) => (typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a))).join(' ')
-        });
-        originalConsoleLog(...args);
-      };
-
-      try {
-        if (currentLang === 'javascript' || currentLang === 'typescript') {
-          // Clean exports for client-side evaluation
-          const executableCode = code
-            .replace(/export\s+default\s+/g, 'return ')
-            .replace(/export\s+(function|class|const|let|var)\s+/g, '$1 ');
-
-          // Find declared function or class
-          const funcMatch = executableCode.match(/function\s+(\w+)/) || executableCode.match(/const\s+(\w+)\s*=/);
-          const funcName = funcMatch ? funcMatch[1] : null;
-
-          // Execute arbitrary sandbox code safely
-          const evalResult = new Function(`
-            ${executableCode}
-            if (typeof ${funcName} !== 'undefined') return ${funcName};
-            return true;
-          `)();
-
-          const durationMs = Math.max(1, Math.round(performance.now() - startTime));
-
-          // Run provided test cases if available
-          let passedCases = 0;
-          const evaluatedTestCases = [];
-
-          if (testCases && testCases.length > 0 && typeof evalResult === 'function') {
-            testCases.forEach((tc, idx) => {
-              try {
-                let inputArg;
-                try {
-                  inputArg = typeof tc.input === 'string' && (tc.input.startsWith('{') || tc.input.startsWith('[')) 
-                    ? JSON.parse(tc.input) 
-                    : tc.input;
-                } catch {
-                  inputArg = tc.input;
-                }
-
-                const actualVal = evalResult(inputArg);
-                let expectedVal = tc.expected;
-                try {
-                  expectedVal = typeof tc.expected === 'string' && (tc.expected.startsWith('{') || tc.expected.startsWith('['))
-                    ? JSON.parse(tc.expected)
-                    : tc.expected;
-                } catch {
-                  expectedVal = tc.expected;
-                }
-
-                const isPass = JSON.stringify(actualVal) === JSON.stringify(expectedVal);
-                if (isPass) passedCases++;
-
-                evaluatedTestCases.push({
-                  caseIndex: idx + 1,
-                  input: JSON.stringify(inputArg),
-                  expected: JSON.stringify(expectedVal),
-                  actual: JSON.stringify(actualVal),
-                  passed: isPass
-                });
-              } catch (tcErr) {
-                evaluatedTestCases.push({
-                  caseIndex: idx + 1,
-                  input: String(tc.input),
-                  expected: String(tc.expected),
-                  actual: `Runtime error: ${tcErr.message}`,
-                  passed: false
-                });
-              }
-            });
-          }
-
-          setTestResults(evaluatedTestCases);
-          setExecutionMetrics({
-            durationMs,
-            passedCases,
-            totalCases: testCases.length,
-            status: testCases.length > 0 ? (passedCases === testCases.length ? 'Accepted' : 'Failed') : 'Success'
-          });
-
-          setTerminalLogs([
-            { type: 'success', text: `Build successful. Execution finished in ${durationMs}ms.` },
-            ...(logs.length > 0 ? logs : [{ type: 'info', text: 'Program completed with zero runtime exit errors.' }]),
-            ...(testCases.length > 0
-              ? [{ type: passedCases === testCases.length ? 'success' : 'warn', text: `Test Cases: ${passedCases}/${testCases.length} Passed` }]
-              : [])
-          ]);
-
-          if (typeof onRun === 'function') {
-            onRun({
-              status: testCases.length > 0 ? (passedCases === testCases.length ? 'Accepted' : 'Failed') : 'Success',
-              durationMs,
-              code,
-              language: currentLang,
-              testResults: evaluatedTestCases
-            });
-          }
-        } else {
-          // Simulation for Python / Java / C++ / SQL in browser
-          const durationMs = Math.floor(Math.random() * 20) + 12;
-          setTerminalLogs([
-            { type: 'success', text: `[${currentLang.toUpperCase()} Compiler Environment v2.4]` },
-            { type: 'info', text: `Syntax verified without warnings. Compiling object binary...` },
-            { type: 'log', text: `Running main entry point with test input fixtures...` },
-            { type: 'success', text: `Program exited with code 0 in ${durationMs}ms.` }
-          ]);
-          setExecutionMetrics({
-            durationMs,
-            passedCases: testCases.length,
-            totalCases: testCases.length,
-            status: 'Accepted'
-          });
-        }
-      } catch (err) {
-        console.error('Code execution error:', err);
+    try {
+      if (!sandboxLanguage) {
         setTerminalLogs([
-          { type: 'error', text: `Execution Exception: ${err.message}` },
-          { type: 'info', text: 'Review syntax, missing variable declarations, or infinite loops.' }
+          { type: 'warn', text: `Language '${currentLang}' is not configured in the server Docker sandbox.` },
+          { type: 'info', text: 'Supported sandbox runtimes: Python 3, JavaScript (Node.js), C++ 17, Java 17.' }
         ]);
         setExecutionMetrics({
           durationMs: Math.round(performance.now() - startTime),
           passedCases: 0,
           totalCases: testCases.length,
-          status: 'Error'
+          status: 'Unsupported'
         });
-      } finally {
-        console.log = originalConsoleLog;
-        setIsRunning(false);
+        return;
       }
-    }, 450);
+
+      const payload = {
+        language: sandboxLanguage,
+        source_code: code,
+        stdin: '',
+      };
+
+      const res = await fetch('/api/v1/sandbox/execution/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.detail || data?.message || `Sandbox returned HTTP ${res.status}`);
+      }
+
+      const durationMs = Math.max(1, Math.round(data.execution_time_ms || (performance.now() - startTime)));
+      const verdict = data.verdict || 'INTERNAL_ERROR';
+      const logs = [
+        {
+          type: verdict === 'ACCEPTED' ? 'success' : 'error',
+          text: `Sandbox Verdict: ${verdict} (${durationMs}ms, exit code ${data.exit_code ?? 0})`
+        }
+      ];
+
+      if (data.compile_error) {
+        logs.push({ type: 'error', text: `Compile Error:\n${data.compile_error}` });
+      }
+      if (data.runtime_error) {
+        logs.push({ type: 'error', text: `Runtime Error:\n${data.runtime_error}` });
+      }
+      if (data.stdout) {
+        logs.push({ type: 'log', text: data.stdout });
+      }
+      if (data.stderr) {
+        logs.push({ type: 'warn', text: data.stderr });
+      }
+
+      setTerminalLogs(logs);
+      const passedCases = Array.isArray(data.test_case_results)
+        ? data.test_case_results.filter((tc) => tc.verdict === 'ACCEPTED').length
+        : (verdict === 'ACCEPTED' ? testCases.length : 0);
+
+      setTestResults(
+        Array.isArray(data.test_case_results)
+          ? data.test_case_results.map((tc, idx) => ({
+              caseIndex: idx + 1,
+              input: testCases[idx]?.input ?? `Case ${tc.id}`,
+              expected: '(hidden)',
+              actual: tc.stdout || tc.stderr || tc.verdict,
+              passed: tc.verdict === 'ACCEPTED',
+            }))
+          : []
+      );
+
+      const statusLabel = verdict === 'ACCEPTED' ? 'Accepted' : verdict.replace(/_/g, ' ');
+      setExecutionMetrics({
+        durationMs,
+        passedCases,
+        totalCases: testCases.length,
+        status: statusLabel,
+      });
+
+      if (typeof onRun === 'function') {
+        onRun({
+          status: statusLabel,
+          durationMs,
+          code,
+          language: currentLang,
+          verdict,
+          stdout: data.stdout || '',
+          stderr: data.stderr || '',
+        });
+      }
+    } catch (err) {
+      console.error('Code execution error:', err);
+      setTerminalLogs([
+        { type: 'error', text: `Sandbox Error: ${err.message}` },
+        { type: 'info', text: 'Verify that the Python Sandbox service (:8000) and Docker daemon are running.' }
+      ]);
+      setExecutionMetrics({
+        durationMs: Math.round(performance.now() - startTime),
+        passedCases: 0,
+        totalCases: testCases.length,
+        status: 'Error'
+      });
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const handleCopy = () => {

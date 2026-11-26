@@ -22,10 +22,12 @@ export const AuthProvider = ({ children }) => {
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('interviewx:logout', handleStorageChange);
+    window.addEventListener('interviewx:login', handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('interviewx:logout', handleStorageChange);
+      window.removeEventListener('interviewx:login', handleStorageChange);
     };
   }, []);
 
@@ -39,6 +41,22 @@ export const AuthProvider = ({ children }) => {
       return newSession;
     } catch (err) {
       setAuthError(err.message || 'Authentication failed');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Registration handler
+  const register = useCallback(async ({ name, email, password, role }) => {
+    try {
+      setLoading(true);
+      setAuthError(null);
+      const newSession = await authService.register({ name, email, password, role });
+      setSession(newSession);
+      return newSession;
+    } catch (err) {
+      setAuthError(err.message || 'Registration failed');
       throw err;
     } finally {
       setLoading(false);
@@ -82,6 +100,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         authError,
         login,
+        register,
         logout,
         updateProfile
       }}

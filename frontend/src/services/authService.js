@@ -1,27 +1,58 @@
+import apiClient from './apiClient';
+
 /**
  * InterviewX AI — Authentication & Session Service
- * Provides real session management, token persistence, and role-based identity.
+ * Authenticates via server-side /api/auth/* endpoints and persists verified JWT sessions.
  */
 
 const SESSION_KEY = 'interviewx_auth_session';
 const SETTINGS_KEY = 'interviewx_workspace_settings';
 
+const isSignedJwt = (token) => typeof token === 'string' && token.split('.').length === 3;
+
+const persistSession = (data) => {
+  if (!data?.token || !data?.user || !isSignedJwt(data.token)) {
+    throw new Error('Authentication server did not return a valid session token.');
+  }
+  const expiresInMs = (data.expiresIn || 86400) * 1000;
+  const expiresAt = Date.now() + expiresInMs;
+  const rawRole = String(data.user.role || '').toLowerCase();
+  const cleanRole = rawRole.includes('candidate') || rawRole.includes('intern') ? 'candidate' : 'employer';
+
+  const session = {
+    user: {
+      id: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      role: data.user.role,
+      candidateId: data.user.candidateId || null,
+      organization: data.user.organization || 'Thozhil Enterprise Platform',
+      avatarUrl: null
+    },
+    token: data.token,
+    expiresAt
+  };
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  localStorage.setItem('thozhil_auth_session', JSON.stringify({
+    user: { ...session.user, token: data.token },
+    role: cleanRole,
+    expiresAt
+  }));
+  localStorage.setItem('auth_token', data.token);
+  localStorage.setItem('auth_user', JSON.stringify({
+    id: session.user.id,
+    name: session.user.name,
+    email: session.user.email,
+    role: cleanRole === 'employer' ? 'authority' : 'intern'
+  }));
+  window.dispatchEvent(new Event('interviewx:login'));
+  return session;
+};
+
 // Session initialized from authoritative Thozhil platform or local session
 const getInitialSession = () => {
   try {
-    // Check THOZHIL platform session first
-    const tzSessionStr = localStorage.getItem('thozhil_auth_session');
-    if (tzSessionStr) {
-      const tzSession = JSON.parse(tzSessionStr);
-      if (tzSession && (!tzSession.expiresAt || Date.now() <= tzSession.expiresAt)) {
-        return {
-          user: tzSession.user,
-          token: tzSession.user?.token || 'tz_token',
-          expiresAt: tzSession.expiresAt
-        };
-      }
-    }
-
     const storedSession = localStorage.getItem(SESSION_KEY);
     if (storedSession) {
       const parsed = JSON.parse(storedSession);
@@ -29,7 +60,26 @@ const getInitialSession = () => {
         localStorage.removeItem(SESSION_KEY);
         return null;
       }
+      if (!isSignedJwt(parsed.token)) {
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem('thozhil_auth_session');
+        return null;
+      }
       return parsed;
+    }
+
+    const tzSessionStr = localStorage.getItem('thozhil_auth_session');
+    if (tzSessionStr) {
+      const tzSession = JSON.parse(tzSessionStr);
+      const token = tzSession?.user?.token;
+      if (tzSession && (!tzSession.expiresAt || Date.now() <= tzSession.expiresAt) && isSignedJwt(token)) {
+        return {
+          user: tzSession.user,
+          token,
+          expiresAt: tzSession.expiresAt
+        };
+      }
+      localStorage.removeItem('thozhil_auth_session');
     }
 
     return null;
@@ -40,81 +90,39 @@ const getInitialSession = () => {
 };
 
 export const authService = {
-  // Get active session
-  getSession: () => {
-    try {
-      const tzSessionStr = localStorage.getItem('thozhil_auth_session');
-      if (tzSessionStr) {
-        const tzSession = JSON.parse(tzSessionStr);
-        if (tzSession && (!tzSession.expiresAt || Date.now() <= tzSession.expiresAt)) {
-          return {
-            user: tzSession.user,
-            token: tzSession.user?.token || 'tz_token',
-            expiresAt: tzSession.expiresAt
-          };
-        }
-      }
+  getSession: () => getInitialSession(),
 
-      const sessionStr = localStorage.getItem(SESSION_KEY);
-      if (!sessionStr) return null;
-      const session = JSON.parse(sessionStr);
-      if (session.expiresAt && Date.now() > session.expiresAt) {
-        localStorage.removeItem(SESSION_KEY);
-        return null;
-      }
-      return session;
-    } catch {
-      return null;
-    }
-  },
-
-  // Authenticate user
+  // Authenticate user against backend /api/auth/login
   login: async ({ email, password, role = 'Recruiter Admin' }) => {
-    // Artificial latency for authentic network feel
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
     if (!email || !email.includes('@')) {
       throw new Error('Please enter a valid work email address.');
     }
+    if (!password) {
+      throw new Error('Password is required.');
+    }
+    const { data } = await apiClient.post('/auth/login', {
+      email: email.trim().toLowerCase(),
+      password,
+      role
+    });
+    return persistSession(data);
+  },
 
-    const isEmployer = role === 'employer' || role === 'Recruiter Admin' || role === 'authority';
-    const cleanRole = isEmployer ? 'employer' : 'candidate';
-
-    // Derive name from email prefix if not supplied
-    const namePart = email.split('@')[0].replace(/[._-]/g, ' ');
-    const formattedName = namePart
-      .split(' ')
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ') || (isEmployer ? 'Recruiter Admin' : 'Candidate');
-
-    const session = {
-      user: {
-        id: `usr_${cleanRole}_${Date.now().toString(36)}`,
-        name: formattedName,
-        email: email.trim().toLowerCase(),
-        role: role,
-        organization: 'Thozhil Enterprise Platform',
-        avatarUrl: null
-      },
-      token: 'tz_jwt_' + Math.random().toString(36).substring(2) + Date.now().toString(36),
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-    };
-
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    localStorage.setItem('thozhil_auth_session', JSON.stringify({
-      user: session.user,
-      role: cleanRole,
-      expiresAt: session.expiresAt
-    }));
-    localStorage.setItem('auth_token', session.token);
-    localStorage.setItem('auth_user', JSON.stringify({
-      id: session.user.id,
-      name: session.user.name,
-      email: session.user.email,
-      role: cleanRole === 'employer' ? 'authority' : 'intern'
-    }));
-
-    return session;
+  // Register user against backend /api/auth/register
+  register: async ({ name, email, password, role = 'Recruiter Admin' }) => {
+    if (!email || !email.includes('@')) {
+      throw new Error('Please enter a valid work email address.');
+    }
+    if (!password || password.length < 8) {
+      throw new Error('Password must be at least 8 characters long.');
+    }
+    const { data } = await apiClient.post('/auth/register', {
+      name: (name || '').trim(),
+      email: email.trim().toLowerCase(),
+      password,
+      role
+    });
+    return persistSession(data);
   },
 
   // Perform genuine sign out

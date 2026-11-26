@@ -14,6 +14,7 @@ import { authenticate } from './middleware/authMiddleware.js';
 import { requireAuth, sanitizeRoleHeader } from './middleware/authGuard.js';
 
 // Route imports
+import authRoutes from './routes/authRoutes.js';
 import candidateRoutes from './routes/candidateRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
@@ -107,7 +108,10 @@ app.get('/api/health', async (req, res, next) => {
   }
 });
 
-// Bind route controllers — requireAuth enforces token presence on all data routes
+// Auth routes (public login/register/session check)
+app.use('/api/auth', authRoutes);
+
+// Bind route controllers — requireAuth enforces verified JWT presence on all data routes
 app.use('/api/candidates', requireAuth, candidateRoutes);
 app.use('/api/jobs', requireAuth, jobRoutes);
 app.use('/api/interviews', requireAuth, interviewRoutes);

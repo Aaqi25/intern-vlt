@@ -15,9 +15,13 @@ export default defineConfig({
         changeOrigin: true
       },
       '/api/screener': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:5020',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/screener/, '/api')
+      },
+      '/api/v1/sandbox': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
       },
       '/api/intern-logs': {
         target: 'http://127.0.0.1:5030',
@@ -41,6 +45,14 @@ export default defineConfig({
       },
       '/api/job-portal': {
         target: 'http://127.0.0.1:5050',
+        changeOrigin: true
+      },
+      '/api/interns': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true
+      },
+      '/api/coding': {
+        target: 'http://127.0.0.1:8080',
         changeOrigin: true
       },
       '/preview': {

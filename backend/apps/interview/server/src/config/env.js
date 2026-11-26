@@ -24,7 +24,7 @@ const envVarsSchema = Joi.object()
     SUPABASE_SECRET_KEY: Joi.string().allow('').default('').description('Supabase service role secret key'),
     SARVAM_API_KEY: Joi.string().allow('').description('Sarvam AI API key'),
     MAX_FILE_SIZE: Joi.number().default(5242880), // 5MB in bytes
-    ALLOWED_ORIGINS: Joi.string().default('http://localhost:5173,http://localhost:5174'),
+    ALLOWED_ORIGINS: Joi.string().default('http://localhost,http://localhost:8080,http://localhost:5173,http://localhost:5174'),
     RATE_LIMIT_MAX: Joi.number().description('Max requests per 15-minute rate limit window'),
     // JWT secret for signing/verifying session tokens (at least 32 chars in production)
     JWT_SECRET: Joi.string().default('dev-jwt-secret-change-in-production-minimum-32-chars!!').description('JWT signing secret'),

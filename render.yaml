@@ -1,0 +1,90 @@
+services:
+  - type: web
+    name: thozhil-interview-api
+    runtime: node
+    rootDir: backend/apps/interview/server
+    buildCommand: PUPPETEER_SKIP_DOWNLOAD=true npm install --omit=dev
+    startCommand: node src/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
+
+  - type: web
+    name: thozhil-resume-api
+    runtime: python
+    rootDir: backend/apps/resume
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/jobs
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: thozhil-project-analysis-api
+    runtime: node
+    rootDir: backend/apps/project-analysis/intern
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: thozhil-job-portal-api
+    runtime: python
+    rootDir: backend/apps/job-portal/api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/job-portal/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: JOB_PORTAL_ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: thozhil-gateway
+    runtime: node
+    rootDir: backend/packages/gateway
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: thozhil-interview-api
+          envVarKey: JWT_SECRET
+      - key: BACKEND_CORE_URL
+        value: https://thozhil-interview-api.onrender.com
+      - key: RESUME_SCREENER_URL
+        value: https://thozhil-resume-api.onrender.com
+      - key: PROJECT_C_API_URL
+        value: https://thozhil-project-analysis-api.onrender.com
+      - key: JOB_PORTAL_API_URL
+        value: https://thozhil-job-portal-api.onrender.com
+      - key: SANDBOX_API_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false

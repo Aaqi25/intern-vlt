@@ -3,10 +3,9 @@ const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
-const realSupabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+const realSupabase = (process.env.SUPABASE_URL && process.env.SUPABASE_KEY)
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
+  : null;
 
 // Keep offline database records local to allow offline usage
 const mockDbFile = path.join(__dirname, 'mock_db.json');
@@ -108,11 +107,15 @@ if (fs.existsSync(mockDbFile)) {
   seedMockDb();
 }
 
-let useMock = false;
+let useMock = !realSupabase;
 
-// Fast validation check
 // Fast validation check against real Supabase client
 async function checkConnection() {
+  if (!realSupabase) {
+    console.warn('[Supabase] SUPABASE_URL or SUPABASE_KEY not configured. Using offline mock database.');
+    useMock = true;
+    return;
+  }
   try {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_KEY;

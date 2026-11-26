@@ -20,8 +20,8 @@ import BrandLogo from '../components/BrandLogo';
 import { useApp as useInternApp } from '../intern/context/InternContext';
 
 export const Login = () => {
-  const { login, loading: authLoading } = useAuth();
-  const { login: thozhilLogin } = useThozhilAuth();
+  const { login, register: registerAccount, loading: authLoading } = useAuth();
+  const { syncFromStorage } = useThozhilAuth();
   const { showToast } = useApp();
   const { setRole: setInternRole } = useInternApp();
   const navigate = useNavigate();
@@ -92,17 +92,21 @@ export const Login = () => {
         ? location.state.from.pathname
         : defaultDest;
 
-      await login({
-        email: data.email,
-        password: data.password,
-        role
-      });
-      await thozhilLogin({
-        email: data.email,
-        password: data.password,
-        role: activeRole === 'admin' ? 'employer' : 'candidate',
-        name: data.fullName || (activeRole === 'admin' ? 'Talent Acquisition Lead' : 'Candidate')
-      });
+      if (authMode === 'signup') {
+        await registerAccount({
+          name: data.fullName,
+          email: data.email,
+          password: data.password,
+          role
+        });
+      } else {
+        await login({
+          email: data.email,
+          password: data.password,
+          role
+        });
+      }
+      syncFromStorage();
 
       const internRole = activeRole === 'admin' ? 'authority' : 'intern';
       try {

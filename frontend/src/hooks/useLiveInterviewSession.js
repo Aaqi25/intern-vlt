@@ -78,13 +78,10 @@ export const useLiveInterviewSession = ({
         console.warn('[useLiveInterview] Failed to parse VITE_API_URL for WebSocket derivation:', e.message);
       }
     }
-    // 3. Fallback based on browser window location
+    // 3. Fallback to same-origin WebSocket proxy (/ws/live is proxied by Vite, Gateway, and Nginx)
     const isHttps = window.location.protocol === 'https:';
     const wsProtocol = isHttps ? 'wss:' : 'ws:';
-    const host = window.location.hostname || 'localhost';
-    // Backend default port is 5000
-    const port = window.location.port === '5173' || window.location.port === '3000' ? '5000' : (window.location.port || '5000');
-    return `${wsProtocol}//${host}:${port}/ws/live`;
+    return `${wsProtocol}//${window.location.host}/ws/live`;
   }, []);
 
   // Helper to derive scoped session storage key
