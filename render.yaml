@@ -2,6 +2,7 @@ services:
   - type: web
     name: thozhil-interview-api
     runtime: node
+    plan: free
     rootDir: backend/apps/interview/server
     buildCommand: PUPPETEER_SKIP_DOWNLOAD=true npm install --omit=dev
     startCommand: node src/server.js
@@ -23,6 +24,7 @@ services:
   - type: web
     name: thozhil-resume-api
     runtime: python
+    plan: free
     rootDir: backend/apps/resume
     buildCommand: pip install -r requirements.txt
     startCommand: cd backend && uvicorn app:app --host 0.0.0.0 --port $PORT
@@ -36,6 +38,7 @@ services:
   - type: web
     name: thozhil-project-analysis-api
     runtime: node
+    plan: free
     rootDir: backend/apps/project-analysis/intern
     buildCommand: npm install --omit=dev
     startCommand: node server.js
@@ -51,6 +54,7 @@ services:
   - type: web
     name: thozhil-job-portal-api
     runtime: python
+    plan: free
     rootDir: backend/apps/job-portal/api
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -64,6 +68,7 @@ services:
   - type: web
     name: thozhil-gateway
     runtime: node
+    plan: free
     rootDir: backend/packages/gateway
     buildCommand: npm install --omit=dev
     startCommand: node server.js
